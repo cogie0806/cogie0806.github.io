@@ -55,7 +55,7 @@
             margin: 0;
         }
 
-        /* 🪞 鏡（カメラ）のデザイン */
+        /* 🪞 鏡（カメラ）とダウンロードのデザイン */
         .mirror-box {
             background: rgba(0, 0, 0, 0.4);
             padding: 15px;
@@ -68,8 +68,7 @@
             width: 100%;
             border-radius: 8px;
             background: #222;
-            /* 左右を反転させて、本物の鏡と同じ向きにするよ */
-            transform: scaleX(-1); 
+            transform: scaleX(-1); /* 鏡向き */
         }
         .mirror-btn {
             background-color: #a855f7; /* 紫色 */
@@ -77,6 +76,17 @@
         }
         .mirror-btn:hover {
             background-color: #9333ea;
+        }
+        .shutter-btn {
+            background-color: #ec4899; /* ピンク色 */
+            margin-top: 8px;
+        }
+        .shutter-btn:hover {
+            background-color: #db2777;
+        }
+        /* 撮影した写真を隠しておくための設定 */
+        #download-canvas {
+            display: none;
         }
 
         .comment-box {
@@ -205,11 +215,13 @@
                 <p id="tokei">00:00:00</p>
             </div>
             
-            <!-- 🪞 ここに鏡（カメラ）を追加したよ！ -->
+            <!-- 🪞 鏡と新機能のダウンロードボタン -->
             <div class="mirror-box">
                 <p style="margin: 0 0 8px 0; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
                 <video id="mirror-video" autoplay playsinline></video>
+                <canvas id="download-canvas"></canvas> <!-- 写真を作る裏画面 -->
                 <button class="mirror-btn" onclick="startMirror()">鏡をうつす</button>
+                <button class="shutter-btn" onclick="takePhoto()">📸 写真をダウンロード</button>
             </div>
             
             <p style="margin-top: 20px;">はじめてホームページを作りました！</p>
@@ -329,17 +341,47 @@
             inputTag.value = "";
         }
 
-        /* 🪞 鏡（カメラ）用のJavaScript処理 */
+        /* 🪞 鏡と写真ダウンロードのJavaScript処理 */
         async function startMirror() {
             try {
-                // パソコンやスマホのカメラをオンにするよ
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 const videoTag = document.getElementById("mirror-video");
                 videoTag.srcObject = stream;
             } catch (err) {
-                alert("カメラを開けませんでした。許可（きょか）ボタンを押してね！");
+                alert("カメラを開けませんでした。ロックを解除してね！");
                 console.error(err);
             }
+        }
+
+        function takePhoto() {
+            const video = document.getElementById("mirror-video");
+            const canvas = document.getElementById("download-canvas");
+            
+            // カメラが動いていない時はダウンロードさせない
+            if (!video.srcObject) {
+                alert("先に「鏡をうつす」ボタンを押してね！");
+                return;
+            }
+
+            const ctx = canvas.getContext("2d");
+            
+            // カメラの映像と同じサイズにする
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // 写真も鏡と同じ向き（反転）で保存できるようにする計算
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            
+            // canvasに今の瞬間を書き込む
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // 画像データに変換してダウンロードさせる
+            const imageURL = canvas.toDataURL("image/jpeg");
+            const link = document.createElement("a");
+            link.href = imageURL;
+            link.download = "cogie-homepage-photo.jpg"; // ファイルの名前
+            link.click();
         }
 
         /* ⏱ タイマー用のJavaScript処理 */
@@ -455,14 +497,4 @@
                 const result = new Function('return ' + formula)();
                 screen.value = Number(result.toFixed(4)); 
                 currentInput = screen.value;
-                formula = screen.value;
-            } catch (error) {
-                screen.value = "エラー";
-                formula = "";
-                currentInput = "0";
-            }
-        }
-    </script>
-
-</body>
-</html>
+formula = screen.value;} catch (error) {screen.value = "エラー";formula = "";currentInput = "0";}}
