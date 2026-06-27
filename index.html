@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -81,9 +81,9 @@
         .link-btn {
             display: block;
             text-align: center;
-            background-color: #10b981; /* みどり色 */
+            background-color: #10b981; 
             color: white;
-            text-decoration: none; /* 下線をけす */
+            text-decoration: none; 
             padding: 8px;
             margin: 8px 0;
             border-radius: 4px;
@@ -91,7 +91,7 @@
             font-size: 14px;
         }
         .link-btn:hover {
-            background-color: #059669; /* マウスをのせると少し暗くなるよ */
+            background-color: #059669; 
         }
 
         /* ⏱ タイマー用の追加デザイン */
@@ -118,57 +118,52 @@
         #start-btn { background-color: #10b981; }
         #stop-btn { background-color: #ef4444; }
 
-        /* 🧮 電卓用の追加デザイン */
+        /* 🧮 小学生向け電卓のデザイン */
         .calc-box {
             background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 10px;
             margin-top: 15px;
         }
         #calc-screen {
             width: 100%;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
+            height: 45px;
+            background: #111827;
+            color: #10b981; 
             text-align: right;
-            font-size: 20px;
+            font-size: 24px;
+            font-weight: bold;
             padding: 5px 10px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
             box-sizing: border-box;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .calc-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
+            gap: 6px;
         }
         .calc-buttons button {
             margin-top: 0;
-            padding: 10px;
+            padding: 12px 5px;
             font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background-color: #4b5563; 
         }
         .calc-buttons button:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-        .calc-buttons button.operator {
-            background-color: #f59e0b; /* オレンジ色 */
-        }
-        .calc-buttons button.operator:hover {
-            background-color: #d97706;
+            filter: brightness(1.2); 
         }
         .calc-buttons button.clear {
-            background-color: #ef4444; /* 赤色 */
+            background-color: #ef4444; 
         }
-        .calc-buttons button.clear:hover {
-            background-color: #dc2626;
+        .calc-buttons button.operator {
+            background-color: #f59e0b; 
+            font-size: 14px;
         }
         .calc-buttons button.equal {
-            background-color: #10b981; /* 緑色 */
-        }
-        .calc-buttons button.equal:hover {
-            background-color: #059669;
+            background-color: #3b82f6; 
+            font-size: 18px;
         }
     </style>
 
@@ -193,13 +188,12 @@
         <div class="right-menu">
             <h3>メニュー</h3>
             
-            <!-- 💡 ここに便利なリンクボタンを2つ作ったよ！ -->
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
-            <!-- ⏱ カウントダウンタイマー機能を追加 -->
+            <!-- ⏱ タイマー -->
             <div class="timer-box">
                 <p style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
                 <input type="number" id="timer-input" placeholder="例: 60" min="1">
@@ -211,33 +205,32 @@
             </div>
 
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
-
-            <!-- 🧮 電卓機能を追加 -->
+            <!-- 🧮 かんたん電卓 -->
             <div class="calc-box">
-                <p style="margin: 0 0 5px 0; font-size: 14px; text-align: center;">🧮 ミニ電卓</p>
+                <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 かんたん電卓</p>
                 <input type="text" id="calc-screen" readonly value="0">
                 <div class="calc-buttons">
-                    <button class="clear" onclick="clearCalc()">C</button>
-                    <button onclick="pressCalc('/')">/</button>
-                    <button onclick="pressCalc('*')">*</button>
-                    <button class="operator" onclick="pressCalc('-')">-</button>
+                    <button class="clear" onclick="clearCalc()">けす</button>
+                    <button class="operator" onclick="pressOperator('/')">わる</button>
+                    <button class="operator" onclick="pressOperator('*')">かける</button>
+                    <button class="operator" onclick="pressOperator('-')">ひく</button>
                     
-                    <button onclick="pressCalc('7')">7</button>
-                    <button onclick="pressCalc('8')">8</button>
-                    <button onclick="pressCalc('9')">9</button>
-                    <button class="operator" onclick="pressCalc('+')">+</button>
+                    <button onclick="pressNum('7')">7</button>
+                    <button onclick="pressNum('8')">8</button>
+                    <button onclick="pressNum('9')">9</button>
+                    <button class="operator" onclick="pressOperator('+')">たす</button>
                     
-                    <button onclick="pressCalc('4')">4</button>
-                    <button onclick="pressCalc('5')">5</button>
-                    <button onclick="pressCalc('6')">6</button>
-                    <button class="equal" style="grid-row: span 2; height: 100%;" onclick="calculate()">=</button>
+                    <button onclick="pressNum('4')">4</button>
+                    <button onclick="pressNum('5')">5</button>
+                    <button onclick="pressNum('6')">6</button>
+                    <button class="equal" style="grid-row: span 2; height: 100%;" onclick="calculate()">＝</button>
                     
-                    <button onclick="pressCalc('1')">1</button>
-                    <button onclick="pressCalc('2')">2</button>
-                    <button onclick="pressCalc('3')">3</button>
+                    <button onclick="pressNum('1')">1</button>
+                    <button onclick="pressNum('2')">2</button>
+                    <button onclick="pressNum('3')">3</button>
                     
-                    <button style="grid-column: span 2;" onclick="pressCalc('0')">0</button>
-                    <button onclick="pressCalc('.')">.</button>
+                    <button style="grid-column: span 2;" onclick="pressNum('0')">0</button>
+                    <button onclick="pressNum('.')">.</button>
                 </div>
             </div>
 
@@ -254,7 +247,6 @@
         </div>
 
     </div> 
-
 
     <script>
         function tokeiWoUgokasul() {
@@ -289,236 +281,6 @@
         }
         setInterval(tokeiWoUgokasul, 1000);
         tokeiWoUgokasul();
-
-
-        function addComment() {
-            const inputTag = document.getElementById("comment-input");
-            const commentText = inputTag.value; 
-
-            if (commentText === "") return; 
-
-            const newBox = document.createElement("div");
-            newBox.className = "comment-box";
-            newBox.textContent = commentText;
-
-            const listTag = document.getElementById("comment-list");
-            listTag.insertBefore(newBox, listTag.firstChild);
-
-            inputTag.value = "";
-        }
-
-        /* ⏱ タイマー用のJavaScript処理 */
-        let timerCountdown;
-        let timeLeft = 0;
-
-
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>cogie0806のホームページ</title>
-    
-    <style>
-        body {
-            background-image: url("bg.jpg");
-            background-size: cover;           
-            background-position: center;      
-            background-attachment: fixed;     
-            
-            color: #ffffff;            
-            font-family: sans-serif;   
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            display: flex;
-            justify-content: space-between; 
-            gap: 20px; 
-        }
-
-        .left-content {
-            flex: 1; 
-        }
-
-        .right-menu {
-            width: 300px; 
-            background: rgba(0, 0, 0, 0.5); 
-            padding: 20px;
-            border-radius: 12px; 
-            box-sizing: border-box;
-        }
-
-        .tokei-box {
-            background: rgba(0, 0, 0, 0.3); 
-            display: inline-block;   
-            padding: 10px 15px;           
-            border-radius: 8px;      
-        }
-
-        #hizuke {
-            font-size: 16px;
-            margin: 0 0 5px 0;
-            color: #e0e0e0;
-        }
-
-        #tokei {
-            font-size: 28px;         
-            font-weight: bold;       
-            margin: 0;
-        }
-
-        .comment-box {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        input, button {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 4px;
-            border: none;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #3b82f6;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* 💡 リンクボタンのデザイン */
-        .link-btn {
-            display: block;
-            text-align: center;
-            background-color: #10b981; /* みどり色 */
-            color: white;
-            text-decoration: none; /* 下線をけす */
-            padding: 8px;
-            margin: 8px 0;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        .link-btn:hover {
-            background-color: #059669; /* マウスをのせると少し暗くなるよ */
-        }
-
-        /* ⏱ タイマー用の追加デザイン */
-        .timer-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 15px;
-            text-align: center;
-        }
-        #timer-display {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .timer-buttons {
-            display: flex;
-            gap: 5px;
-        }
-        .timer-buttons button {
-            margin-top: 5px;
-            flex: 1;
-        }
-        #start-btn { background-color: #10b981; }
-        #stop-btn { background-color: #ef4444; }
-    </style>
-
-</head>
-<body>
-
-    <div class="container">
-
-        <!-- 👈 左がわ：あいさつ、日付、時計 -->
-        <div class="left-content">
-            <h1 id="aisatsu">こんにちは！</h1>
-            
-            <div class="tokei-box">
-                <p id="hizuke">0000年00月00日( )</p>
-                <p id="tokei">00:00:00</p>
-            </div>
-            
-            <p>はじめてホームページを作りました！</p>
-        </div>
-
-        <!-- 👉 右がわ：メニュー -->
-        <div class="right-menu">
-            <h3>メニュー</h3>
-            
-            <!-- 💡 ここに便利なリンクボタンを2つ作ったよ！ -->
-            <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
-            <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
-            
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
-
-            <!-- ⏱ カウントダウンタイマー機能を追加 -->
-            <div class="timer-box">
-                <p style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
-                <input type="number" id="timer-input" placeholder="例: 60" min="1">
-                <div id="timer-display">00:00</div>
-                <div class="timer-buttons">
-                    <button id="start-btn" onclick="startTimer()">スタート</button>
-                    <button id="stop-btn" onclick="stopTimer()">ストップ</button>
-                </div>
-            </div>
-
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
-
-            <p>💬 コメントをおねがいします！</p>
-            
-            <div id="comment-list">
-                <div class="comment-box">ホームページへようこそ！</div>
-            </div>
-
-            <input type="text" id="comment-input" placeholder="ここに文字を書いてね">
-            <button onclick="addComment()">送信する</button>
-        </div>
-
-    </div> 
-
-
-    <script>
-        function tokeiWoUgokasul() {
-            const ima = new Date(); 
-            let h = ima.getHours();
-            let m = ima.getMinutes();
-            let s = ima.getSeconds();
-            
-            const aisatsuTag = document.getElementById("aisatsu");
-            if (h >= 5 && h < 11) {
-                aisatsuTag.textContent = "おはようございます！";
-            } else if (h >= 11 && h < 18) {
-                aisatsuTag.textContent = "こんにちは！";
-            } else {
-                aisatsuTag.textContent = "こんばんは！";
-            }
-
-            let year = ima.getFullYear();
-            let month = ima.getMonth() + 1; 
-            let date = ima.getDate();
-            let dayNum = ima.getDay(); 
-            const yoobi = ["日", "月", "火", "水", "木", "金", "土"];
-
-            if (month < 10) month = "0" + month;
-            if (date < 10) date = "0" + date;
-            if (h < 10) h = "0" + h;
-            if (m < 10) m = "0" + m;
-            if (s < 10) s = "0" + s;
-            
-            document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobi[dayNum] + "）";
-            document.getElementById("tokei").textContent = h + ":" + m + ":" + s;
-        }
-        setInterval(tokeiWoUgokasul, 1000);
-        tokeiWoUgokasul();
-
 
         function addComment() {
             const inputTag = document.getElementById("comment-input");
@@ -549,18 +311,14 @@
         }
 
         function startTimer() {
-            // すでに動いているタイマーがあれば止める
             clearInterval(timerCountdown);
-
             const inputVal = document.getElementById("timer-input").value;
             
-            // 残り時間が0、または新しい秒数が入力されたら時間をセット
             if (timeLeft <= 0 || inputVal !== "") {
                 timeLeft = parseInt(inputVal, 10);
-                document.getElementById("timer-input").value = ""; // 入力欄をクリア
+                document.getElementById("timer-input").value = "";
             }
 
-            // 数字が正しくない場合は処理しない
             if (isNaN(timeLeft) || timeLeft <= 0) {
                 alert("有効な秒数を入力してください！");
                 return;
@@ -568,7 +326,6 @@
 
             updateTimerDisplay();
 
-            // 1秒ごとにカウントダウンする
             timerCountdown = setInterval(function() {
                 timeLeft--;
                 updateTimerDisplay();
@@ -582,6 +339,53 @@
 
         function stopTimer() {
             clearInterval(timerCountdown);
+        }
+
+        /* 🧮 電卓用のJavaScript処理 */
+        const screen = document.getElementById("calc-screen");
+        let currentInput = "0"; 
+        let formula = "";      
+
+        function pressNum(val) {
+            if (currentInput === "0" && val !== ".") {
+                currentInput = val;
+            } else {
+                currentInput += val;
+            }
+            formula += val;
+            screen.value = currentInput;
+        }
+
+        function pressOperator(op) {
+            let displayOp = "";
+            if (op === "+") displayOp = " ＋ ";
+            if (op === "-") displayOp = " － ";
+            if (op === "*") displayOp = " × ";
+            if (op === "/") displayOp = " ÷ ";
+
+            currentInput = "0";
+            formula += op;
+            screen.value = displayOp;
+        }
+
+        function clearCalc() {
+            currentInput = "0";
+            formula = "";
+            screen.value = "0";
+        }
+
+        function calculate() {
+            try {
+                if (formula === "") return;
+                const result = new Function('return ' + formula)();
+                screen.value = Number(result.toFixed(4)); 
+                currentInput = screen.value;
+                formula = screen.value;
+            } catch (error) {
+                screen.value = "エラー";
+                formula = "";
+                currentInput = "0";
+            }
         }
     </script>
 
