@@ -40,6 +40,7 @@
             display: inline-block;   
             padding: 10px 15px;           
             border-radius: 8px;      
+            margin-bottom: 20px;
         }
 
         #hizuke {
@@ -52,6 +53,30 @@
             font-size: 28px;         
             font-weight: bold;       
             margin: 0;
+        }
+
+        /* 🪞 鏡（カメラ）のデザイン */
+        .mirror-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            max-width: 400px;
+            margin-top: 10px;
+        }
+        #mirror-video {
+            width: 100%;
+            border-radius: 8px;
+            background: #222;
+            /* 左右を反転させて、本物の鏡と同じ向きにするよ */
+            transform: scaleX(-1); 
+        }
+        .mirror-btn {
+            background-color: #a855f7; /* 紫色 */
+            margin-top: 10px;
+        }
+        .mirror-btn:hover {
+            background-color: #9333ea;
         }
 
         .comment-box {
@@ -94,7 +119,7 @@
             background-color: #059669; 
         }
 
-        /* ⏱ タイマー用の追加デザイン */
+        /* ⏱ タイマー用のデザイン */
         .timer-box {
             background: rgba(255, 255, 255, 0.1);
             padding: 10px;
@@ -171,7 +196,7 @@
 
     <div class="container">
 
-        <!-- 👈 左がわ：あいさつ、日付、時計 -->
+        <!-- 👈 左がわ：あいさつ、日付、時計、鏡 -->
         <div class="left-content">
             <h1 id="aisatsu">こんにちは！</h1>
             
@@ -180,13 +205,19 @@
                 <p id="tokei">00:00:00</p>
             </div>
             
-            <p>はじめてホームページを作りました！</p>
+            <!-- 🪞 ここに鏡（カメラ）を追加したよ！ -->
+            <div class="mirror-box">
+                <p style="margin: 0 0 8px 0; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
+                <video id="mirror-video" autoplay playsinline></video>
+                <button class="mirror-btn" onclick="startMirror()">鏡をうつす</button>
+            </div>
+            
+            <p style="margin-top: 20px;">はじめてホームページを作りました！</p>
         </div>
 
         <!-- 👉 右がわ：メニュー -->
         <div class="right-menu">
             <h3>メニュー</h3>
-            
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
             
@@ -204,6 +235,7 @@
             </div>
 
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
+
             <!-- 🧮 電卓 -->
             <div class="calc-box">
                 <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 電卓</p>
@@ -297,7 +329,20 @@
             inputTag.value = "";
         }
 
-        /* ⏱ タイマー用のJavaScript処理（アラートを消したよ！） */
+        /* 🪞 鏡（カメラ）用のJavaScript処理 */
+        async function startMirror() {
+            try {
+                // パソコンやスマホのカメラをオンにするよ
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const videoTag = document.getElementById("mirror-video");
+                videoTag.srcObject = stream;
+            } catch (err) {
+                alert("カメラを開けませんでした。許可（きょか）ボタンを押してね！");
+                console.error(err);
+            }
+        }
+
+        /* ⏱ タイマー用のJavaScript処理 */
         let timerCountdown;
         let timeLeft = 0;
         let audioCtx = null;
@@ -362,7 +407,7 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(timerCountdown);
-                    playTimerSound(); // ⏰ ピピピと音を鳴らすだけにしたよ！
+                    playTimerSound(); 
                 }
             }, 1000);
         }
