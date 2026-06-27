@@ -68,23 +68,22 @@
             width: 100%;
             border-radius: 8px;
             background: #222;
-            transform: scaleX(-1); /* 鏡向き */
+            transform: scaleX(-1); 
         }
         .mirror-btn {
-            background-color: #a855f7; /* 紫色 */
+            background-color: #a855f7; 
             margin-top: 10px;
         }
         .mirror-btn:hover {
             background-color: #9333ea;
         }
         .shutter-btn {
-            background-color: #ec4899; /* ピンク色 */
+            background-color: #ec4899; 
             margin-top: 8px;
         }
         .shutter-btn:hover {
             background-color: #db2777;
         }
-        /* 撮影した写真を隠しておくための設定 */
         #download-canvas {
             display: none;
         }
@@ -111,7 +110,6 @@
             font-weight: bold;
             cursor: pointer;
         }
-
         /* 💡 リンクボタンのデザイン */
         .link-btn {
             display: block;
@@ -219,7 +217,7 @@
             <div class="mirror-box">
                 <p style="margin: 0 0 8px 0; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
                 <video id="mirror-video" autoplay playsinline></video>
-                <canvas id="download-canvas"></canvas> <!-- 写真を作る裏画面 -->
+                <canvas id="download-canvas"></canvas> 
                 <button class="mirror-btn" onclick="startMirror()">鏡をうつす</button>
                 <button class="shutter-btn" onclick="takePhoto()">📸 写真をダウンロード</button>
             </div>
@@ -234,7 +232,6 @@
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
-
             <!-- ⏱ タイマー -->
             <div class="timer-box">
                 <p style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
@@ -341,7 +338,7 @@
             inputTag.value = "";
         }
 
-        /* 🪞 鏡と写真ダウンロードのJavaScript処理 */
+        /* 🪞 鏡と写真ダウンロードの処理 */
         async function startMirror() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -357,34 +354,28 @@
             const video = document.getElementById("mirror-video");
             const canvas = document.getElementById("download-canvas");
             
-            // カメラが動いていない時はダウンロードさせない
             if (!video.srcObject) {
                 alert("先に「鏡をうつす」ボタンを押してね！");
                 return;
             }
 
             const ctx = canvas.getContext("2d");
-            
-            // カメラの映像と同じサイズにする
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             
-            // 写真も鏡と同じ向き（反転）で保存できるようにする計算
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
             
-            // canvasに今の瞬間を書き込む
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            // 画像データに変換してダウンロードさせる
             const imageURL = canvas.toDataURL("image/jpeg");
             const link = document.createElement("a");
             link.href = imageURL;
-            link.download = "cogie-homepage-photo.jpg"; // ファイルの名前
+            link.download = "cogie-homepage-photo.jpg"; 
             link.click();
         }
 
-        /* ⏱ タイマー用のJavaScript処理 */
+        /* ⏱ タイマー用の処理 */
         let timerCountdown;
         let timeLeft = 0;
         let audioCtx = null;
@@ -458,7 +449,7 @@
             clearInterval(timerCountdown);
         }
 
-        /* 🧮 電卓用のJavaScript処理 */
+        /* 🧮 電卓用の処理 */
         const screen = document.getElementById("calc-screen");
         let currentInput = "0"; 
         let formula = "";      
@@ -497,4 +488,14 @@
                 const result = new Function('return ' + formula)();
                 screen.value = Number(result.toFixed(4)); 
                 currentInput = screen.value;
-formula = screen.value;} catch (error) {screen.value = "エラー";formula = "";currentInput = "0";}}
+                formula = screen.value;
+            } catch (error) {
+                screen.value = "エラー";
+                formula = "";
+                currentInput = "0";
+            }
+        }
+    </script>
+
+</body>
+</html>
