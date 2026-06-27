@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>cogie0806のホームページ</title>
+    
+    <style>
+        body {
+            background-image: url("bg.jpg");
+            background-size: cover;           
+            background-position: center;      
+            background-attachment: fixed;     
+            
+            color: #ffffff;            
+            font-family: sans-serif;   
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between; 
+            gap: 20px; 
+        }
+
+        .left-content {
+            flex: 1; 
+        }
+
+        .right-menu {
+            width: 300px; 
+            background: rgba(0, 0, 0, 0.5); 
+            padding: 20px;
+            border-radius: 12px; 
+            box-sizing: border-box;
+        }
+
+        .tokei-box {
+            background: rgba(0, 0, 0, 0.3); 
+            display: inline-block;   
+            padding: 10px 15px;           
+            border-radius: 8px;      
+        }
+
+        #hizuke {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            color: #e0e0e0;
+        }
+
+        #tokei {
+            font-size: 28px;         
+            font-weight: bold;       
+            margin: 0;
+        }
+
+        .comment-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: none;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 💡 リンクボタンのデザイン */
+        .link-btn {
+            display: block;
+            text-align: center;
+            background-color: #10b981; /* みどり色 */
+            color: white;
+            text-decoration: none; /* 下線をけす */
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .link-btn:hover {
+            background-color: #059669; /* マウスをのせると少し暗くなるよ */
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- 👈 左がわ：あいさつ、日付、時計 -->
+        <div class="left-content">
+            <h1 id="aisatsu">こんにちは！</h1>
+            
+            <div class="tokei-box">
+                <p id="hizuke">0000年00月00日( )</p>
+                <p id="tokei">00:00:00</p>
+            </div>
+            
+            <p>はじめてホームページを作りました！</p>
+        </div>
+
+        <!-- 👉 右がわ：メニュー（リンクボタンを追加！） -->
+        <div class="right-menu">
+            <h3>メニュー</h3>
+            
+            <!-- 💡 ここに便利なリンクボタンを2つ作ったよ！ -->
+            <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
+            <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
+            
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
+
+            <p>💬 コメントをおねがいします！</p>
+            
+            <div id="comment-list">
+                <div class="comment-box">ホームページへようこそ！</div>
+            </div>
+
+            <input type="text" id="comment-input" placeholder="ここに文字を書いてね">
+            <button onclick="addComment()">送信する</button>
+        </div>
+
+    </div> 
+
+
+    <script>
+        function tokeiWoUgokasul() {
+            const ima = new Date(); 
+            let h = ima.getHours();
+            let m = ima.getMinutes();
+            let s = ima.getSeconds();
+            
+            const aisatsuTag = document.getElementById("aisatsu");
+            if (h >= 5 && h < 11) {
+                aisatsuTag.textContent = "おはようございます！";
+            } else if (h >= 11 && h < 18) {
+                aisatsuTag.textContent = "こんにちは！";
+            } else {
+                aisatsuTag.textContent = "こんばんは！";
+            }
+
+            let year = ima.getFullYear();
+            let month = ima.getMonth() + 1; 
+            let date = ima.getDate();
+            let dayNum = ima.getDay(); 
+            const yoobi = ["日", "月", "火", "水", "木", "金", "土"];
+
+            if (month < 10) month = "0" + month;
+            if (date < 10) date = "0" + date;
+            if (h < 10) h = "0" + h;
+            if (m < 10) m = "0" + m;
+            if (s < 10) s = "0" + s;
+            
+            document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobi[dayNum] + "）";
+            document.getElementById("tokei").textContent = h + ":" + m + ":" + s;
+        }
+        setInterval(tokeiWoUgokasul, 1000);
+        tokeiWoUgokasul();
+
+
+        function addComment() {
+            const inputTag = document.getElementById("comment-input");
+            const commentText = inputTag.value; 
+
+            if (commentText === "") return; 
+
+            const newBox = document.createElement("div");
+            newBox.className = "comment-box";
+            newBox.textContent = commentText;
+
+            const listTag = document.getElementById("comment-list");
+            listTag.insertBefore(newBox, listTag.firstChild);
+
+            inputTag.value = "";
+        }
+    </script>
+
+</body>
+</html>
