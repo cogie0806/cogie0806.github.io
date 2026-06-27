@@ -93,6 +93,30 @@
         .link-btn:hover {
             background-color: #059669; /* マウスをのせると少し暗くなるよ */
         }
+
+        /* ⏱ タイマー用の追加デザイン */
+        .timer-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        #timer-display {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .timer-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .timer-buttons button {
+            margin-top: 5px;
+            flex: 1;
+        }
+        #start-btn { background-color: #10b981; }
+        #stop-btn { background-color: #ef4444; }
     </style>
 
 </head>
@@ -112,7 +136,7 @@
             <p>はじめてホームページを作りました！</p>
         </div>
 
-        <!-- 👉 右がわ：メニュー（リンクボタンを追加！） -->
+        <!-- 👉 右がわ：メニュー -->
         <div class="right-menu">
             <h3>メニュー</h3>
             
@@ -120,6 +144,19 @@
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
             
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
+
+            <!-- ⏱ カウントダウンタイマー機能を追加 -->
+            <div class="timer-box">
+                <p style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
+                <input type="number" id="timer-input" placeholder="例: 60" min="1">
+                <div id="timer-display">00:00</div>
+                <div class="timer-buttons">
+                    <button id="start-btn" onclick="startTimer()">スタート</button>
+                    <button id="stop-btn" onclick="stopTimer()">ストップ</button>
+                </div>
+            </div>
+
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
             <p>💬 コメントをおねがいします！</p>
@@ -184,6 +221,54 @@
             listTag.insertBefore(newBox, listTag.firstChild);
 
             inputTag.value = "";
+        }
+
+        /* ⏱ タイマー用のJavaScript処理 */
+        let timerCountdown;
+        let timeLeft = 0;
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            if (minutes < 10) minutes = "0" + minutes;
+            if (seconds < 10) seconds = "0" + seconds;
+            document.getElementById("timer-display").textContent = minutes + ":" + seconds;
+        }
+
+        function startTimer() {
+            // すでに動いているタイマーがあれば止める
+            clearInterval(timerCountdown);
+
+            const inputVal = document.getElementById("timer-input").value;
+            
+            // 残り時間が0、または新しい秒数が入力されたら時間をセット
+            if (timeLeft <= 0 || inputVal !== "") {
+                timeLeft = parseInt(inputVal, 10);
+                document.getElementById("timer-input").value = ""; // 入力欄をクリア
+            }
+
+            // 数字が正しくない場合は処理しない
+            if (isNaN(timeLeft) || timeLeft <= 0) {
+                alert("有効な秒数を入力してください！");
+                return;
+            }
+
+            updateTimerDisplay();
+
+            // 1秒ごとにカウントダウンする
+            timerCountdown = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerCountdown);
+                    alert("⏰ 時間になりました！");
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerCountdown);
         }
     </script>
 
