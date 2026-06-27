@@ -297,12 +297,11 @@
             inputTag.value = "";
         }
 
-        /* ⏱ タイマー用のJavaScript処理（音が出るようになったよ！） */
+        /* ⏱ タイマー用のJavaScript処理（アラートを消したよ！） */
         let timerCountdown;
         let timeLeft = 0;
         let audioCtx = null;
 
-        // ピピピと音を鳴らす関数
         function playTimerSound() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -316,14 +315,14 @@
                 gain.connect(audioCtx.destination);
                 
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // 高い音
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
                 gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
                 
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.1); // 0.1秒だけ鳴らす
+                osc.stop(audioCtx.currentTime + 0.1); 
                 
                 count++;
-                if (count >= 5) { // 5回鳴ったら止める
+                if (count >= 5) { 
                     clearInterval(interval);
                 }
             }, 200);
@@ -338,7 +337,6 @@
         }
 
         function startTimer() {
-            // 音を出す準備（ブラウザのブロックを防ぐため）
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
@@ -364,10 +362,7 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(timerCountdown);
-                    playTimerSound(); // ⏰ 音を鳴らす！
-                    setTimeout(() => {
-                        alert("⏰ 時間になりました！");
-                    }, 100);
+                    playTimerSound(); // ⏰ ピピピと音を鳴らすだけにしたよ！
                 }
             }, 1000);
         }
