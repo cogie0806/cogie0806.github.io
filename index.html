@@ -1,278 +1,286 @@
-    <script>
-        // 1. 🕒 時計とあいさつの機能
-        function tokeiWoUgokasul() {
-            const ima = new Date(); 
-            let h = ima.getHours();
-            let m = ima.getMinutes();
-            let s = ima.getSeconds();
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>cogie0806のホームページ</title>
+    
+    <style>
+        body {
+            background-image: url("bg.jpg");
+            background-size: cover;           
+            background-position: center;      
+            background-attachment: fixed;     
+            color: #ffffff;            
+            font-family: sans-serif;   
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between; 
+            gap: 20px; 
+        }
+
+        .left-content {
+            flex: 1; 
+        }
+
+        .right-menu {
+            width: 300px; 
+            background: rgba(0, 0, 0, 0.5); 
+            padding: 20px;
+            border-radius: 12px; 
+            box-sizing: border-box;
+        }
+
+        .tokei-box {
+            background: rgba(0, 0, 0, 0.3); 
+            display: inline-block;   
+            padding: 10px 15px;           
+            border-radius: 8px;      
+        }
+
+        #hizuke {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            color: #e0e0e0;
+        }
+
+        #tokei {
+            font-size: 28px;         
+            font-weight: bold;       
+            margin: 0;
+        }
+
+        .comment-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: none;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 💡 リンクボタンのデザイン */
+        .link-btn {
+            display: block;
+            text-align: center;
+            background-color: #10b981; 
+            color: white;
+            text-decoration: none; 
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .link-btn:hover {
+            background-color: #059669; 
+        }
+
+        /* ⏱ タイマー用の追加デザイン */
+        .timer-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        #timer-display {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .timer-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .timer-buttons button {
+            margin-top: 5px;
+            flex: 1;
+        }
+        #start-btn { background-color: #10b981; }
+        #stop-btn { background-color: #ef4444; }
+
+        /* 🧮 かっこいい電卓のデザイン */
+        .calc-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        #calc-screen {
+            width: 100%;
+            height: 45px;
+            background: #111827;
+            color: #10b981; 
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .calc-buttons button {
+            margin-top: 0;
+            padding: 12px 5px;
+            font-size: 20px; 
+            border-radius: 6px;
+            background-color: #4b5563; 
+        }
+        .calc-buttons button:hover {
+            filter: brightness(1.2); 
+        }
+        .calc-buttons button.clear {
+            background-color: #ef4444; 
+            font-size: 16px;
+        }
+        .calc-buttons button.operator {
+            background-color: #f59e0b; 
+        }
+        .calc-buttons button.equal {
+            background-color: #3b82f6; 
+        }
+
+        /* 🎨 ペイントエディタ用のデザイン設定（追加） */
+        .tool-btn {
+            width: 45px;
+            height: 45px;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+            color: #333333;
+        }
+        .tool-btn:hover {
+            background-color: #f0f0f0;
+        }
+        .tool-btn.active-purple {
+            background-color: #855cd6 !important;
+            color: white !important;
+            border-color: #855cd6 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- 👈 左がわ：あいさつ、日付、時計 -->
+        <div class="left-content">
+            <h1 id="aisatsu">こんにちは！</h1>
             
-            const aisatsuTag = document.getElementById("aisatsu");
-            if (h >= 5 && h < 11) {
-                aisatsuTag.textContent = "おはようございます！";
-            } else if (h >= 11 && h < 18) {
-                aisatsuTag.textContent = "こんにちは！";
-            } else {
-                aisatsuTag.textContent = "こんばんは！";
-            }
-
-            let year = ima.getFullYear();
-            let month = ima.getMonth() + 1; 
-            let date = ima.getDate();
-            let dayNum = ima.getDay(); 
-            const yoobi = ["日", "月", "火", "水", "木", "金", "土"];
-
-            if (month < 10) month = "0" + month;
-            if (date < 10) date = "0" + date;
-            if (h < 10) h = "0" + h;
-            if (m < 10) m = "0" + m;
-            if (s < 10) s = "0" + s;
+            <div class="tokei-box">
+                <p id="hizuke">0000年00月00日( )</p>
+                <p id="tokei">00:00:00</p>
+            </div>
             
-            document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobi[dayNum] + "）";
-            document.getElementById("tokei").textContent = h + ":" + m + ":" + s;
-        }
-        setInterval(tokeiWoUgokasul, 1000);
-        tokeiWoUgokasul();
+            <p>はじめてホームページを作りました！</p>
+        </div>
 
-        // 2. 💬 コメントの機能
-        function addComment() {
-            const inputTag = document.getElementById("comment-input");
-            const commentText = inputTag.value; 
-
-            if (commentText === "") return; 
-
-            const newBox = document.createElement("div");
-            newBox.className = "comment-box";
-            newBox.textContent = commentText;
-
-            const listTag = document.getElementById("comment-list");
-            listTag.insertBefore(newBox, listTag.firstChild);
-
-            inputTag.value = "";
-        }
-
-        // 3. ⏱ タイマーの機能
-        let timerCountdown;
-        let timeLeft = 0;
-
-        function updateTimerDisplay() {
-            let minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
-            if (minutes < 10) minutes = "0" + minutes;
-            if (seconds < 10) seconds = "0" + seconds;
-            document.getElementById("timer-display").textContent = minutes + ":" + seconds;
-        }
-
-        function startTimer() {
-            clearInterval(timerCountdown);
-            const inputVal = document.getElementById("timer-input").value;
+        <!-- 👉 右がわ：メニュー -->
+        <div class="right-menu">
+            <h3>メニュー</h3>
             
-            if (timeLeft <= 0 || inputVal !== "") {
-                timeLeft = parseInt(inputVal, 10);
-                document.getElementById("timer-input").value = "";
-            }
-
-            if (isNaN(timeLeft) || timeLeft <= 0) {
-                alert("有効な秒数を入力してください！");
-                return;
-            }
-
-            updateTimerDisplay();
-
-            timerCountdown = setInterval(function() {
-                timeLeft--;
-                updateTimerDisplay();
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerCountdown);
-                    alert("⏰ 時間になりました！");
-                }
-            }, 1000);
-        }
-
-        function stopTimer() {
-            clearInterval(timerCountdown);
-        }
-
-        // 4. 🧮 電卓の機能
-        const screen = document.getElementById("calc-screen");
-        let currentInput = "0"; 
-        let formula = "";      
-
-        function pressNum(val) {
-            if (currentInput === "0" && val !== ".") {
-                currentInput = val;
-            } else {
-                currentInput += val;
-            }
-            formula += val;
-            screen.value = currentInput;
-        }
-
-        function pressOperator(op) {
-            let displayOp = "";
-            if (op === "+") displayOp = " ＋ ";
-            if (op === "-") displayOp = " － ";
-            if (op === "*") displayOp = " × ";
-            if (op === "/") displayOp = " ÷ ";
-
-            currentInput = "0";
-            formula += op;
-            screen.value = displayOp;
-        }
-
-        function clearCalc() {
-            currentInput = "0";
-            formula = "";
-            screen.value = "0";
-        }
-
-        function calculate() {
-            try {
-                if (formula === "") return;
-                const result = new Function('return ' + formula)();
-                screen.value = Number(result.toFixed(4)); 
-                currentInput = screen.value;
-                formula = screen.value;
-            } catch (error) {
-                screen.value = "エラー";
-                formula = "";
-                currentInput = "0";
-            }
-        }
-
-        // 5. 🎨 ペイントエディタの機能（ポップアップ制御）
-        const modal = document.getElementById('paintModal');
-        let canvas, ctx, colorPicker, lineWidth, drawing = false, currentMode = 'select', startX, startY, snapshot;
-
-        function openPaint() {
-            modal.style.display = 'flex';
-            if (!canvas) initPaint(); // 開いたときに一回だけキャンバスを設定する
-        }
-        function closePaint() { modal.style.display = 'none'; }
-
-        function initPaint() {
-            canvas = document.getElementById('paintCanvas');
-            ctx = canvas.getContext('2d');
-            colorPicker = document.getElementById('colorPicker');
-            lineWidth = document.getElementById('lineWidth');
+            <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
+            <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
             
-            // 最初は背景を真っ白にする
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // イベントを登録する
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            window.addEventListener('mouseup', stopDrawing);
-
-            // ゴミ箱ボタンの処理
-            document.getElementById('clearBtn').addEventListener('click', () => {
-                if (confirm('ぜんぶ消しちゃって大丈夫？')) {
-                    ctx.fillStyle = "#ffffff";
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                }
-            });
-
-            // 💾 画像を保存ボタンの処理
-            document.getElementById('downloadBtn').addEventListener('click', () => {
-                const imageURI = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = 'my_scratch_picture.png';
-                link.href = imageURI;
-                link.click();
-            });
+            <!-- 🎨 ペイントエディタの起動ボタン -->
+            <button class="link-btn" style="background-color: #855cd6; border: none; width: 100%;" onclick="openPaint()">🎨 ペイントエディタ</button>
             
-            document.getElementById('select').classList.add('active-purple');
-        }
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
-        function setMode(btn) {
-            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active-purple'));
-            btn.classList.add('active-purple');
-            currentMode = btn.id;
-        }
+            <!-- ⏱ タイマー -->
+            <div class="timer-box">
+                <p style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
+                <input type="number" id="timer-input" placeholder="例: 60" min="1">
+                <div id="timer-display">00:00</div>
+                <div class="timer-buttons">
+                    <button id="start-btn" onclick="startTimer()">スタート</button>
+                    <button id="stop-btn" onclick="stopTimer()">ストップ</button>
+                </div>
+            </div>
 
-        function startDrawing(e) {
-            drawing = true;
-            const rect = canvas.getBoundingClientRect();
-            startX = e.clientX - rect.left;
-            startY = e.clientY - rect.top;
-
-            ctx.beginPath();
-            ctx.moveTo(startX, startY);
-            snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
             
-            if (currentMode === 'brush' || currentMode === 'eraser') {
-                draw(e);
-            }
-        }
+            <!-- 🧮 電卓 -->
+            <div class="calc-box">
+                <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 電卓</p>
+                <input type="text" id="calc-screen" readonly value="0">
+                <div class="calc-buttons">
+                    <button class="clear" onclick="clearCalc()">けす</button>
+                    <button class="operator" onclick="pressOperator('/')">÷</button>
+                    <button class="operator" onclick="pressOperator('*')">×</button>
+                    <button class="operator" onclick="pressOperator('-')">－</button>
+                    
+                    <button onclick="pressNum('7')">7</button>
+                    <button onclick="pressNum('8')">8</button>
+                    <button onclick="pressNum('9')">9</button>
+                    <button class="operator" onclick="pressOperator('+')">＋</button>
+                    
+                    <button onclick="pressNum('4')">4</button>
+                    <button onclick="pressNum('5')">5</button>
+                    <button onclick="pressNum('6')">6</button>
+                    <button class="equal" style="grid-row: span 2; height: 100%;" onclick="calculate()">＝</button>
+                    
+                    <button onclick="pressNum('1')">1</button>
+                    <button onclick="pressNum('2')">2</button>
+                    <button onclick="pressNum('3')">3</button>
+                    
+                    <button style="grid-column: span 2;" onclick="pressNum('0')">0</button>
+                    <button onclick="pressNum('.')">.</button>
+                </div>
+            </div>
 
-        function draw(e) {
-            if (!drawing) return;
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
-            const rect = canvas.getBoundingClientRect();
-            const currentX = e.clientX - rect.left;
-            const currentY = e.clientY - rect.top;
+            <p>💬 コメントをおねがいします！</p>
+            
+            <div id="comment-list">
+                <div class="comment-box">ホームページへようこそ！</div>
+            </div>
 
-            ctx.lineWidth = lineWidth.value;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+            <input type="text" id="comment-input" placeholder="ここに文字を書いてね">
+            <button onclick="addComment()">送信する</button>
+        </div>
 
-            if (currentMode === 'brush') {
-                ctx.strokeStyle = colorPicker.value;
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-            } 
-            else if (currentMode === 'eraser') {
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-            } 
-            else if (currentMode === 'line') {
-                ctx.putImageData(snapshot, 0, 0);
-                ctx.strokeStyle = colorPicker.value;
-                ctx.beginPath();
-                ctx.moveTo(startX, startY);
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-            } 
-            else if (currentMode === 'rect') {
-                ctx.putImageData(snapshot, 0, 0);
-                ctx.strokeStyle = colorPicker.value;
-                ctx.strokeRect(startX, startY, currentX - startX, currentY - startY);
-            } 
-            else if (currentMode === 'circle') {
-                ctx.putImageData(snapshot, 0, 0);
-                ctx.strokeStyle = colorPicker.value;
-                ctx.beginPath();
-                let radius = Math.sqrt(Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2));
-                ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
-                ctx.stroke();
-            }
-        }
+    </div> 
 
-        function stopDrawing(e) {
-            if (!drawing) return;
-            drawing = false;
-            const rect = canvas.getBoundingClientRect();
-            const endX = e.clientX - rect.left;
-            const endY = e.clientY - rect.top;
-
-            if (currentMode === 'bucket') {
-                ctx.fillStyle = colorPicker.value;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-            else if (currentMode === 'text') {
-                let text = prompt("いれたい文字を入力してね：");
-                if (text) {
-                    ctx.fillStyle = colorPicker.value;
-                    ctx.font = `${lineWidth.value * 3}px sans-serif`;
-                    ctx.fillText(text, endX, endY);
-                }
-            }
-            else if (currentMode === 'select' || currentMode === 'reshape') {
-                alert(`「${currentMode === 'select' ? '選択' : '形を変える'}」モードが選ばれたよ！`);
-            }
-
-            ctx.beginPath();
-        }
-    </script>
+    <!-- 🎨 ポップアップで開くペイントエディタの画面 -->
+    <div id="paintModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; user-select: none;">
+        <div style="background: white; padding: 20px; border-radius: 12px; position: relative; color: #333; display: flex; flex-direction: column; align-items: center;">
+            <button onclick="closePaint()" style="position: absolute; top: 10px; right: 10px; width: 35px; height: 35px; background: #ff4d4d; color: white; border: none; border-radius: 50%; font-weight: bold; cursor: pointer; padding: 0;">❌</button>
+            <h1 style="color: #4c3e99; font-size: 20px; margin: 0 0 15px 0;">🎨 スクラッチ風ペイントエディタ</h1>
+            <div style="display: flex; gap: 15px;">
+                <!-- 左側ツールバー -->
+                <div style="display: grid; grid-template-columns: repeat(2, 45px); grid-gap: 12px; align-content: start;">
+                    <button class="tool-btn" id="select" onclick="setMode(this)">↖️</button>
+                    <button class="tool-btn" id="reshape" onclick="setMode(this)">⬈</button>🧼🪣Ｔ╱◯⬜色: 太さ: 💾 画像を保存🗑️ 全部消す// 1. 🕒 時計とあいさつの機能function tokeiWoUgokasul() {const ima = new Date();let h = ima.getHours();let m = ima.getMinutes();let s = ima.getSeconds();const aisatsuTag = document.getElementById("aisatsu");if (h >= 5 && h < 11) {aisatsuTag.textContent = "おはようございます！";} else if (h >= 11 && h < 18) {aisatsuTag.textContent = "こんにちは！";} else {aisatsuTag.textContent = "こんばんは！";}let year = ima.getFullYear();let month = ima.getMonth() + 1;let date = ima.getDate();let dayNum = ima.getDay();const yoobi = ["日", "月", "火", "水", "木", "金", "土"];if (month < 10) month = "0" + month;if (date < 10) date = "0" + date;if (h < 10) h = "0" + h;if (m < 10) m = "0" + m;if (s < 10) s = "0" + s;document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobi[dayNum] + "）";document.getElementById("tokei").textContent = h + ":" + m + ":" + s;}setInterval(tokeiWoUgokasul, 1000);tokeiWoUgokasul();// 2. 💬 コメントの機能function addComment() {const inputTag = document.getElementById("comment-input");const commentText = inputTag.value;if (commentText === "") return;const newBox = document.createElement("div");newBox.className = "comment-box";newBox.textContent = commentText;const listTag = document.getElementById("comment-list");listTag.insertBefore(newBox, listTag.firstChild);inputTag.value = "";}// 3. ⏱ タイマーの機能let timerCountdown;let timeLeft = 0;function updateTimerDisplay() {let minutes = Math.floor(timeLeft / 60);let seconds = timeLeft % 60;if (minutes < 10) minutes = "0" + minutes;if (seconds < 10) seconds = "0" + seconds;document.getElementById("timer-display").textContent = minutes + ":" + seconds;}function startTimer() {clearInterval(timerCountdown);const inputVal = document.getElementById("timer-input").value;if (timeLeft <= 0 || inputVal !== "") {timeLeft = parseInt(inputVal, 10);document.getElementById("timer-input").value = "";}if (isNaN(timeLeft) || timeLeft <= 0) {alert("有効な秒数を入力してください！");return;}updateTimerDisplay();timerCountdown = setInterval(function() {timeLeft--;updateTimerDisplay();if (timeLeft <= 0) {clearInterval(timerCountdown);alert("⏰ 時間になりました！");}}, 1000);}function stopTimer() {clearInterval(timerCountdown);}// 4. 🧮 電卓の機能const screen = document.getElementById("calc-screen");let currentInput = "0";let formula = "";function pressNum(val) {if (currentInput === "0" && val !== ".") {currentInput = val;} else {currentInput += val;}formula += val;screen.value = currentInput;}function pressOperator(op) {let displayOp = "";if (op === "+") displayOp = " ＋ ";if (op === "-") displayOp = " － ";if (op === "*") displayOp = " × ";if (op === "/") displayOp = " ÷ ";currentInput = "0";formula += op;screen.value = displayOp;}function clearCalc() {currentInput = "0";formula = "";screen.value = "0";}function calculate() {try {if (formula === "") return;const result = new Function('return ' + formula)();screen.value = Number(result.toFixed(4));currentInput = screen.value;formula = screen.value;} catch (error) {screen.value = "エラー";formula = "";currentInput = "0";}}// 5. 🎨 ペイントエディタの機能const modal = document.getElementById('paintModal');let canvas, ctx, colorPicker, lineWidth, drawing = false, currentMode = 'select', startX, startY, snapshot;function openPaint() {modal.style.display = 'flex';if (!canvas) initPaint();}function closePaint() { modal.style.display = 'none'; }function initPaint() {canvas = document.getElementById('paintCanvas');ctx = canvas.getContext('2d');colorPicker = document.getElementById('colorPicker');lineWidth = document.getElementById('lineWidth');ctx.fillStyle = "#ffffff";ctx.fillRect(0, 0, canvas.width, canvas.height);canvas.addEventListener('mousedown', startDrawing);canvas.addEventListener('mousemove', draw);window.addEventListener('mouseup', stopDrawing);document.getElementById('clearBtn').addEventListener('click', () => {if (confirm('ぜんぶ消しちゃって大丈夫？')) {ctx.fillStyle = "#ffffff";ctx.fillRect(0, 0, canvas.width, canvas.height);}});document.getElementById('downloadBtn').addEventListener('click', () => {const imageURI = canvas.toDataURL('image/png');const link = document.createElement('a');link.download = 'my_scratch_picture.png';link.href = imageURI;link.click();});document.getElementById('select').classList.add('active-purple');}function setMode(btn) {document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active-purple'));btn.classList.add('active-purple');currentMode = btn.id;}function startDrawing(e) {drawing = true;const rect = canvas.getBoundingClientRect();startX = e.clientX - rect.left;startY = e.clientY - rect.top;ctx.beginPath();ctx.moveTo(startX, startY);snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);if (currentMode === 'brush' || currentMode === 'eraser') {draw(e);}}function draw(e) {if (!drawing) return;const rect = canvas.getBoundingClientRect();const currentX = e.clientX - rect.left;const currentY = e.clientY - rect.top;ctx.lineWidth = lineWidth.value;ctx.lineCap = 'round';ctx.lineJoin = 'round';if (currentMode === 'brush') {ctx.strokeStyle = colorPicker.value;ctx.lineTo(currentX, currentY);ctx.stroke();}else if (currentMode === 'eraser') {ctx.strokeStyle = '#ffffff';ctx.lineTo(currentX, currentY);ctx.stroke();}else if (currentMode === 'line') {ctx.putImageData(snapshot, 0, 0);ctx.strokeStyle = colorPicker.value;ctx.beginPath();ctx.moveTo(startX, startY);ctx.lineTo(currentX, currentY);ctx.stroke();}else if (currentMode === 'rect') {ctx.putImageData(snapshot, 0, 0);ctx.strokeStyle = colorPicker.value;ctx.strokeRect(startX, startY, currentX - startX, currentY - startY);}else if (currentMode === 'circle') {ctx.putImageData(snapshot, 0, 0);ctx.strokeStyle = colorPicker.value;ctx.beginPath();let radius = Math.sqrt(Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2));ctx.arc(startX, startY, radius, 0, 2 * Math.PI);ctx.stroke();}}function stopDrawing(e) {if (!drawing) return;drawing = false;const rect = canvas.getBoundingClientRect();const endX = e.clientX - rect.left;const endY = e.clientY - rect.top;if (currentMode === 'bucket') {ctx.fillStyle = colorPicker.value;ctx.fillRect(0, 0, canvas.width, canvas.height);}else if (currentMode === 'text') {let text = prompt("いれたい文字を入力してね：");if (text) {ctx.fillStyle = colorPicker.value;ctx.font = ${lineWidth.value * 3}px sans-serif;ctx.fillText(text, endX, endY);}}else if (currentMode === 'select' || currentMode === 'reshape') {alert(「${currentMode === 'select' ? '選択' : '形を変える'}」モードが選ばれたよ！);}ctx.beginPath();}
+                    <button class="tool-btn" id="brush" onclick="setMode(this)">🖌️</button>
