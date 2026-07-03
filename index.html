@@ -33,7 +33,7 @@
         .calc-buttons button.clear { background-color: #ef4444; font-size: 16px; }
         .calc-buttons button.operator { background-color: #f59e0b; }
         .calc-buttons button.equal { background-color: #3b82f6; }
-        .paint-box { background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 10px; margin-top: 15px; color: #333; }
+        .paint-box, .mirror-box { background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 10px; margin-top: 15px; color: #333; }
         .tool-btn { width: 40px; height: 40px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 18px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .tool-btn.active-purple { background-color: #855cd6 !important; color: white !important; border-color: #855cd6 !important; }
     </style>
@@ -55,6 +55,16 @@
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
             
+            <!-- 🪞 復活した鏡カメラ機能の画面 -->
+            <div class="mirror-box">
+                <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
+                <video id="webcam" autoplay playsinline style="width: 100%; max-width: 280px; border-radius: 6px; transform: scaleX(-1); background: #000;"></video>
+                <div style="display: flex; gap: 5px; margin-top: 8px;">
+                    <button onclick="startCamera()" style="background-color: #3b82f6; font-size: 12px; padding: 6px;">📸 鏡をうつす</button>
+                    <button onclick="takePhoto()" style="background-color: #10b981; font-size: 12px; padding: 6px;">💾 写真を保存</button>
+                </div>
+                <canvas id="photoCanvas" style="display: none;"></canvas>
+            </div>
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
             <div class="timer-box">
                 <p style="margin: 0; font-size: 14px;">⏱ タイマー</p>
@@ -73,7 +83,10 @@
                     <button onclick="pressNum('4')">4</button><button onclick="pressNum('5')">5</button><button onclick="pressNum('6')">6</button><button class="equal" style="grid-row: span 2; height: 100%;" onclick="calculate()">＝</button>
                     <button onclick="pressNum('1')">1</button><button onclick="pressNum('2')">2</button><button onclick="pressNum('3')">3</button>
                     <button style="grid-column: span 2;" onclick="pressNum('0')">0</button><button onclick="pressNum('.')">.</button>
-                </div>            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
             <div class="paint-box">
                 <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🎨 ペイント</p>
                 <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-bottom: 10px;">
@@ -96,6 +109,7 @@
     </div> 
 
     <script>
+        // 🕒 時計とあいさつ
         function clock() {
             const ima = new Date(); let h = ima.getHours(), m = ima.getMinutes(), s = ima.getSeconds();
             const tag = document.getElementById("aisatsu");
@@ -107,12 +121,28 @@
         }
         setInterval(clock, 1000); clock();
 
+        // 🪞 鏡カメラのプログラム
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+                document.getElementById('webcam').srcObject = stream;
+            } catch (err) { alert("カメラがみつからない、または許可されていません"); }
+        }
+        function takePhoto() {
+            const video = document.getElementById('webcam'); const canvas = document.getElementById('photoCanvas');
+            if (!video.srcObject) { alert("まずは「鏡をうつす」ボタンを押してね！"); return; }
+            const ctx = canvas.getContext('2d'); canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+            ctx.translate(canvas.width, 0); ctx.scale(-1, 1); ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const a = document.createElement('a'); a.download = 'mirror_photo.png'; a.href = canvas.toDataURL(); a.click();
+        }
+
+        // 💬 コメント
         function addComment() {
             const i = document.getElementById("comment-input"); if (!i || i.value === "") return; 
             const b = document.createElement("div"); b.className = "comment-box"; b.textContent = i.value;
             document.getElementById("comment-list").insertBefore(b, document.getElementById("comment-list").firstChild); i.value = "";
         }
-
+        // ⏱ タイマー
         let tmr, tLeft = 0;
         function updTmr() { let m = String(Math.floor(tLeft / 60)).padStart(2,'0'), s = String(tLeft % 60).padStart(2,'0'); document.getElementById("timer-display").textContent = `${m}:${s}`; }
         function startTimer() {
@@ -123,11 +153,14 @@
         }
         function stopTimer() { clearInterval(tmr); }
 
+        // 🧮 電卓
         const scr = document.getElementById("calc-screen"); let cIn = "0", formula = "";      
         function pressNum(v) { if (cIn === "0" && v !== ".") cIn = v; else cIn += v; formula += v; scr.value = cIn; }
         function pressOperator(o) { let d = ""; if (o === "+") d = " ＋ "; if (o === "-") d = " － "; if (o === "*") d = " × "; if (o === "/") d = " ÷ "; cIn = "0"; formula += o; scr.value = d; }
         function clearCalc() { cIn = "0"; formula = ""; scr.value = "0"; }
         function calculate() { try { if (formula === "") return; const r = new Function('return ' + formula)(); scr.value = Number(r.toFixed(4)); cIn = scr.value; formula = scr.value; } catch (e) { scr.value = "エラー"; formula = ""; cIn = "0"; } }
+
+        // 🎨 ペイントエディタ
         let cvs = document.getElementById('paintCanvas'), ctx = cvs.getContext('2d'), cPik = document.getElementById('colorPicker'), lW = document.getElementById('lineWidth'), drawing = false, mode = 'select', sX, sY, snap;
         ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, cvs.width, cvs.height); document.getElementById('select').classList.add('active-purple');
 
@@ -137,7 +170,7 @@
         });
         cvs.addEventListener('mousemove', dwn);
         window.addEventListener('mouseup', (e) => {
-            if (!drawing) return; drawing = false; const r = cvs.getBoundingClientRect();
+            if (!drawing) return; drawing = false;
             if (mode === 'bucket') { ctx.fillStyle = cPik.value; ctx.fillRect(0, 0, cvs.width, cvs.height); }
             else if (mode === 'text') { let t = prompt("文字を入力："); if (t) { ctx.fillStyle = cPik.value; ctx.font = `${lW.value * 3}px sans-serif`; ctx.fillText(t, sX, sY); } }
             else if (mode === 'select' || mode === 'reshape') { alert(`「${mode === 'select' ? '選択' : '形を変える'}」モード！`); }
@@ -158,5 +191,3 @@
     </script>
 </body>
 </html>
-
-            </div>
