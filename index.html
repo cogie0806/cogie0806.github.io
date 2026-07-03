@@ -34,7 +34,7 @@
         .calc-buttons button.operator { background-color: #f59e0b; }
         .calc-buttons button.equal { background-color: #3b82f6; }
         .paint-box, .mirror-box { background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 10px; margin-top: 15px; color: #333; }
-        .tool-btn { width: 40px; height: 40px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 18px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .tool-btn { width: 40px; height: 40px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: #333; }
         .tool-btn.active-purple { background-color: #855cd6 !important; color: white !important; border-color: #855cd6 !important; }
     </style>
 </head>
@@ -55,7 +55,6 @@
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
             
-            <!-- 🪞 復活した鏡カメラ機能の画面 -->
             <div class="mirror-box">
                 <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
                 <video id="webcam" autoplay playsinline style="width: 100%; max-width: 280px; border-radius: 6px; transform: scaleX(-1); background: #000;"></video>
@@ -65,6 +64,7 @@
                 </div>
                 <canvas id="photoCanvas" style="display: none;"></canvas>
             </div>
+
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
             <div class="timer-box">
                 <p style="margin: 0; font-size: 14px;">⏱ タイマー</p>
@@ -89,8 +89,17 @@
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
             <div class="paint-box">
                 <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🎨 ペイント</p>
+                <!-- 💡 確実に文字化けをなおしたボタンのアイコン -->
                 <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-bottom: 10px;">
-                    <button class="tool-btn" id="select" onclick="setMode(this)">↖️</button><button class="tool-btn" id="reshape" onclick="setMode(this)">⬈</button><button class="tool-btn" id="brush" onclick="setMode(this)">🖌️</button><button class="tool-btn" id="eraser" onclick="setMode(this)">🧼</button><button class="tool-btn" id="bucket" onclick="setMode(this)">🪣</button><button class="tool-btn" id="text" onclick="setMode(this)">Ｔ</button><button class="tool-btn" id="line" onclick="setMode(this)">╱</button><button class="tool-btn" id="circle" onclick="setMode(this)">◯</button><button class="tool-btn" id="rect" onclick="setMode(this)">⬜</button>
+                    <button class="tool-btn" id="select" onclick="setMode(this)">↖️</button>
+                    <button class="tool-btn" id="reshape" onclick="setMode(this)">変形</button>
+                    <button class="tool-btn" id="brush" onclick="setMode(this)">🖌️</button>
+                    <button class="tool-btn" id="eraser" onclick="setMode(this)">🧼</button>
+                    <button class="tool-btn" id="bucket" onclick="setMode(this)">🪣</button>
+                    <button class="tool-btn" id="text" onclick="setMode(this)">文字</button>
+                    <button class="tool-btn" id="line" onclick="setMode(this)">直線</button>
+                    <button class="tool-btn" id="circle" onclick="setMode(this)">丸</button>
+                    <button class="tool-btn" id="rect" onclick="setMode(this)">⬜</button>
                 </div>
                 <canvas id="paintCanvas" width="280" height="200" style="background:white; border:1px solid #d0d0d0; border-radius:4px; cursor:crosshair; width:100%; height:auto;"></canvas>
                 <div style="display: flex; gap: 5px; align-items: center; margin-top: 8px; font-size: 12px;">
@@ -107,7 +116,6 @@
             <button onclick="addComment()">送信する</button>
         </div>
     </div> 
-
     <script>
         // 🕒 時計とあいさつ
         function clock() {
@@ -142,6 +150,7 @@
             const b = document.createElement("div"); b.className = "comment-box"; b.textContent = i.value;
             document.getElementById("comment-list").insertBefore(b, document.getElementById("comment-list").firstChild); i.value = "";
         }
+
         // ⏱ タイマー
         let tmr, tLeft = 0;
         function updTmr() { let m = String(Math.floor(tLeft / 60)).padStart(2,'0'), s = String(tLeft % 60).padStart(2,'0'); document.getElementById("timer-display").textContent = `${m}:${s}`; }
@@ -165,7 +174,8 @@
         ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, cvs.width, cvs.height); document.getElementById('select').classList.add('active-purple');
 
         cvs.addEventListener('mousedown', (e) => {
-            drawing = true; const r = cvs.getBoundingClientRect(); sX = (e.clientX - r.left) * (cvs.width / r.width); sY = (e.clientY - r.top) * (cvs.height / r.height);
+            drawing = true; const r = cvs.getBoundingClientRect();
+            sX = (e.clientX - r.left) * (cvs.width / r.width); sY = (e.clientY - r.top) * (cvs.height / r.height);
             ctx.beginPath(); ctx.moveTo(sX, sY); snap = ctx.getImageData(0, 0, cvs.width, cvs.height); if (mode === 'brush' || mode === 'eraser') dwn(e);
         });
         cvs.addEventListener('mousemove', dwn);
