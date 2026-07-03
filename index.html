@@ -1,294 +1,5 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>cogie0806のホームページ</title>
-    
-    <style>
-        body {
-            background-image: url("bg.jpg");
-            background-size: cover;           
-            background-position: center;      
-            background-attachment: fixed;     
-            
-            color: #ffffff;            
-            font-family: sans-serif;   
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            display: flex;
-            justify-content: space-between; 
-            gap: 20px; 
-        }
-
-        .left-content {
-            flex: 1; 
-        }
-
-        .right-menu {
-            width: 300px; 
-            background: rgba(0, 0, 0, 0.5); 
-            padding: 20px;
-            border-radius: 12px; 
-            box-sizing: border-box;
-        }
-
-        .tokei-box {
-            background: rgba(0, 0, 0, 0.3); 
-            display: inline-block;   
-            padding: 10px 15px;           
-            border-radius: 8px;      
-            margin-bottom: 20px;
-        }
-
-        #hizuke {
-            font-size: 16px;
-            margin: 0 0 5px 0;
-            color: #e0e0e0;
-        }
-
-        #tokei {
-            font-size: 28px;         
-            font-weight: bold;       
-            margin: 0;
-        }
-
-        /* 🪞 鏡（カメラ）とダウンロードのデザイン */
-        .mirror-box {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            max-width: 400px;
-            margin-top: 10px;
-        }
-        #mirror-video {
-            width: 100%;
-            border-radius: 8px;
-            background: #222;
-            transform: scaleX(-1); 
-        }
-        .mirror-btn {
-            background-color: #a855f7; 
-            margin-top: 10px;
-        }
-        .mirror-btn:hover {
-            background-color: #9333ea;
-        }
-        .shutter-btn {
-            background-color: #ec4899; 
-            margin-top: 8px;
-        }
-        .shutter-btn:hover {
-            background-color: #db2777;
-        }
-        #download-canvas {
-            display: none;
-        }
-
-        .comment-box {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        input, button {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 4px;
-            border: none;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #3b82f6;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        /* 💡 リンクボタンのデザイン */
-        .link-btn {
-            display: block;
-            text-align: center;
-            background-color: #10b981; 
-            color: white;
-            text-decoration: none; 
-            padding: 8px;
-            margin: 8px 0;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        .link-btn:hover {
-            background-color: #059669; 
-        }
-
-        /* ⏱ タイマー用のデザイン */
-        .timer-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 15px;
-            text-align: center;
-        }
-        #timer-display {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .timer-buttons {
-            display: flex;
-            gap: 5px;
-        }
-        .timer-buttons button {
-            margin-top: 5px;
-            flex: 1;
-        }
-        #start-btn { background-color: #10b981; }
-        #stop-btn { background-color: #ef4444; }
-
-        /* 🧮 電卓のデザイン */
-        .calc-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
-        #calc-screen {
-            width: 100%;
-            height: 45px;
-            background: #111827;
-            color: #10b981; 
-            text-align: right;
-            font-size: 24px;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 6px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-sizing: border-box;
-            margin-bottom: 10px;
-        }
-        .calc-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-        }
-        .calc-buttons button {
-            margin-top: 0;
-            padding: 12px 5px;
-            font-size: 20px; 
-            border-radius: 6px;
-            background-color: #4b5563; 
-        }
-        .calc-buttons button:hover {
-            filter: brightness(1.2); 
-        }
-        .calc-buttons button.clear {
-            background-color: #ef4444; 
-            font-size: 16px;
-        }
-        .calc-buttons button.operator {
-            background-color: #f59e0b; 
-        }
-        .calc-buttons button.equal {
-            background-color: #3b82f6; 
-        }
-    </style>
-
-</head>
-<body>
-
-    <div class="container">
-
-        <!-- 👈 左がわ：あいさつ、日付、時計、鏡 -->
-        <div class="left-content">
-            <h1 id="aisatsu">こんにちは！</h1>
-            
-            <div class="tokei-box">
-                <p id="hizuke">0000年00月00日( )</p>
-                <p id="tokei">00:00:00</p>
-            </div>
-            
-            <!-- 🪞 鏡と新機能のダウンロードボタン -->
-            <div class="mirror-box">
-                <p style="margin: 0 0 8px 0; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
-                <video id="mirror-video" autoplay playsinline></video>
-                <canvas id="download-canvas"></canvas> 
-                <button class="mirror-btn" onclick="startMirror()">鏡をうつす</button>
-                <button class="shutter-btn" onclick="takePhoto()">📸 写真をダウンロード</button>
-            </div>
-            
-            <p style="margin-top: 20px;">はじめてホームページを作りました！</p>
-        </div>
-
-        <!-- 👉 右がわ：メニュー -->
-        <div class="right-menu">
-            <h3>メニュー</h3>
-            <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
-            <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
-            
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
-            <!-- ⏱ タイマー -->
-            <div class="timer-box">
-                <p style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
-                <input type="number" id="timer-input" placeholder="例: 60" min="1">
-                <div id="timer-display">00:00</div>
-                <div class="timer-buttons">
-                    <button id="start-btn" onclick="startTimer()">スタート</button>
-                    <button id="stop-btn" onclick="stopTimer()">ストップ</button>
-                </div>
-            </div>
-
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
-
-            <!-- 🧮 電卓 -->
-            <div class="calc-box">
-                <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 電卓</p>
-                <input type="text" id="calc-screen" readonly value="0">
-                <div class="calc-buttons">
-                    <button class="clear" onclick="clearCalc()">けす</button>
-                    <button class="operator" onclick="pressOperator('/')">÷</button>
-                    <button class="operator" onclick="pressOperator('*')">×</button>
-                    <button class="operator" onclick="pressOperator('-')">－</button>
-                    
-                    <button onclick="pressNum('7')">7</button>
-                    <button onclick="pressNum('8')">8</button>
-                    <button onclick="pressNum('9')">9</button>
-                    <button class="operator" onclick="pressOperator('+')">＋</button>
-                    
-                    <button onclick="pressNum('4')">4</button>
-                    <button onclick="pressNum('5')">5</button>
-                    <button onclick="pressNum('6')">6</button>
-                    <button class="equal" style="grid-row: span 2; height: 100%;" onclick="calculate()">＝</button>
-                    
-                    <button onclick="pressNum('1')">1</button>
-                    <button onclick="pressNum('2')">2</button>
-                    <button onclick="pressNum('3')">3</button>
-                    
-                    <button style="grid-column: span 2;" onclick="pressNum('0')">0</button>
-                    <button onclick="pressNum('.')">.</button>
-                </div>
-            </div>
-
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
-
-            <p>💬 コメントをおねがいします！</p>
-            
-            <div id="comment-list">
-                <div class="comment-box">ホームページへようこそ！</div>
-            </div>
-
-            <input type="text" id="comment-input" placeholder="ここに文字を書いてね">
-            <button onclick="addComment()">送信する</button>
-        </div>
-
-    </div> 
-
     <script>
+        // 1. 🕒 時計とあいさつの機能
         function tokeiWoUgokasul() {
             const ima = new Date(); 
             let h = ima.getHours();
@@ -322,6 +33,7 @@
         setInterval(tokeiWoUgokasul, 1000);
         tokeiWoUgokasul();
 
+        // 2. 💬 コメントの機能
         function addComment() {
             const inputTag = document.getElementById("comment-input");
             const commentText = inputTag.value; 
@@ -338,73 +50,9 @@
             inputTag.value = "";
         }
 
-        /* 🪞 鏡と写真ダウンロードの処理 */
-        async function startMirror() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                const videoTag = document.getElementById("mirror-video");
-                videoTag.srcObject = stream;
-            } catch (err) {
-                alert("カメラを開けませんでした。ロックを解除してね！");
-                console.error(err);
-            }
-        }
-
-        function takePhoto() {
-            const video = document.getElementById("mirror-video");
-            const canvas = document.getElementById("download-canvas");
-            
-            if (!video.srcObject) {
-                alert("先に「鏡をうつす」ボタンを押してね！");
-                return;
-            }
-
-            const ctx = canvas.getContext("2d");
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-            
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            const imageURL = canvas.toDataURL("image/jpeg");
-            const link = document.createElement("a");
-            link.href = imageURL;
-            link.download = "cogie-homepage-photo.jpg"; 
-            link.click();
-        }
-
-        /* ⏱ タイマー用の処理 */
+        // 3. ⏱ タイマーの機能
         let timerCountdown;
         let timeLeft = 0;
-        let audioCtx = null;
-
-        function playTimerSound() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
-            let count = 0;
-            let interval = setInterval(() => {
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.1); 
-                
-                count++;
-                if (count >= 5) { 
-                    clearInterval(interval);
-                }
-            }, 200);
-        }
 
         function updateTimerDisplay() {
             let minutes = Math.floor(timeLeft / 60);
@@ -415,10 +63,6 @@
         }
 
         function startTimer() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
             clearInterval(timerCountdown);
             const inputVal = document.getElementById("timer-input").value;
             
@@ -440,7 +84,7 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(timerCountdown);
-                    playTimerSound(); 
+                    alert("⏰ 時間になりました！");
                 }
             }, 1000);
         }
@@ -449,7 +93,7 @@
             clearInterval(timerCountdown);
         }
 
-        /* 🧮 電卓用の処理 */
+        // 4. 🧮 電卓の機能
         const screen = document.getElementById("calc-screen");
         let currentInput = "0"; 
         let formula = "";      
@@ -495,7 +139,140 @@
                 currentInput = "0";
             }
         }
-    </script>
 
-</body>
-</html>
+        // 5. 🎨 ペイントエディタの機能（ポップアップ制御）
+        const modal = document.getElementById('paintModal');
+        let canvas, ctx, colorPicker, lineWidth, drawing = false, currentMode = 'select', startX, startY, snapshot;
+
+        function openPaint() {
+            modal.style.display = 'flex';
+            if (!canvas) initPaint(); // 開いたときに一回だけキャンバスを設定する
+        }
+        function closePaint() { modal.style.display = 'none'; }
+
+        function initPaint() {
+            canvas = document.getElementById('paintCanvas');
+            ctx = canvas.getContext('2d');
+            colorPicker = document.getElementById('colorPicker');
+            lineWidth = document.getElementById('lineWidth');
+            
+            // 最初は背景を真っ白にする
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // イベントを登録する
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            window.addEventListener('mouseup', stopDrawing);
+
+            // ゴミ箱ボタンの処理
+            document.getElementById('clearBtn').addEventListener('click', () => {
+                if (confirm('ぜんぶ消しちゃって大丈夫？')) {
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+
+            // 💾 画像を保存ボタンの処理
+            document.getElementById('downloadBtn').addEventListener('click', () => {
+                const imageURI = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = 'my_scratch_picture.png';
+                link.href = imageURI;
+                link.click();
+            });
+            
+            document.getElementById('select').classList.add('active-purple');
+        }
+
+        function setMode(btn) {
+            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active-purple'));
+            btn.classList.add('active-purple');
+            currentMode = btn.id;
+        }
+
+        function startDrawing(e) {
+            drawing = true;
+            const rect = canvas.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            
+            if (currentMode === 'brush' || currentMode === 'eraser') {
+                draw(e);
+            }
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+
+            ctx.lineWidth = lineWidth.value;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            if (currentMode === 'brush') {
+                ctx.strokeStyle = colorPicker.value;
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            } 
+            else if (currentMode === 'eraser') {
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            } 
+            else if (currentMode === 'line') {
+                ctx.putImageData(snapshot, 0, 0);
+                ctx.strokeStyle = colorPicker.value;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            } 
+            else if (currentMode === 'rect') {
+                ctx.putImageData(snapshot, 0, 0);
+                ctx.strokeStyle = colorPicker.value;
+                ctx.strokeRect(startX, startY, currentX - startX, currentY - startY);
+            } 
+            else if (currentMode === 'circle') {
+                ctx.putImageData(snapshot, 0, 0);
+                ctx.strokeStyle = colorPicker.value;
+                ctx.beginPath();
+                let radius = Math.sqrt(Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2));
+                ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+        }
+
+        function stopDrawing(e) {
+            if (!drawing) return;
+            drawing = false;
+            const rect = canvas.getBoundingClientRect();
+            const endX = e.clientX - rect.left;
+            const endY = e.clientY - rect.top;
+
+            if (currentMode === 'bucket') {
+                ctx.fillStyle = colorPicker.value;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            else if (currentMode === 'text') {
+                let text = prompt("いれたい文字を入力してね：");
+                if (text) {
+                    ctx.fillStyle = colorPicker.value;
+                    ctx.font = `${lineWidth.value * 3}px sans-serif`;
+                    ctx.fillText(text, endX, endY);
+                }
+            }
+            else if (currentMode === 'select' || currentMode === 'reshape') {
+                alert(`「${currentMode === 'select' ? '選択' : '形を変える'}」モードが選ばれたよ！`);
+            }
+
+            ctx.beginPath();
+        }
+    </script>
