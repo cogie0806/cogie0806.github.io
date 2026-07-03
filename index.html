@@ -74,7 +74,9 @@
             <p>💬 コメントをおねがいします！</p>
             <div id="comment-list"><div class="comment-box">ホームページへようこそ！</div></div>
             <input type="text" id="comment-input" placeholder="文字を書いてね"><button onclick="addComment()">送信する</button>
-        </div>    <script>
+        </div>
+    </div>
+    <script>
         function clock() {
             const ima = new Date(); let h = ima.getHours(), m = ima.getMinutes(), s = ima.getSeconds();
             const tag = document.getElementById("aisatsu");
@@ -106,8 +108,12 @@
             document.getElementById("comment-list").insertBefore(b, document.getElementById("comment-list").firstChild); i.value = "";
         }
 
+        // ⏱ タイマー（音がしっかり鳴り、エラーを起こさない安全バージョン）
         let tmr, tLeft = 0;
-        function updTmr() { let m = String(Math.floor(tLeft / 60)).padStart(2,'0'), s = String(tLeft % 60).padStart(2,'0'); document.getElementById("timer-display").textContent = `${m}:${s}`; }
+        function updTmr() { 
+            let m = String(Math.floor(tLeft / 60)).padStart(2,'0'), s = String(tLeft % 60).padStart(2,'0'); 
+            document.getElementById("timer-display").textContent = `${m}:${s}`; 
+        }
         function startTimer() {
             clearInterval(tmr); const i = document.getElementById("timer-input");
             if (tLeft <= 0 || i.value !== "") { tLeft = parseInt(i.value, 10); i.value = ""; }
@@ -119,15 +125,119 @@
                 if (tLeft <= 0) { 
                     clearInterval(tmr); 
                     try {
-                        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.connect(gain); gain.connect(audioCtx.destination);
-                        osc.type = 'sine'; osc.frequency.value = 880; 
-                        gain.gain.setValueAtTime(0.3, audioCtx.currentTime); 
-                        osc.start(); osc.stop(audioCtx.currentTime + 0.3); 
-                    } catch(e) { console.log("音が鳴らせませんでした"); }
-                    alert("⏰ 時間になりました！"); 
+                        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                        if (AudioContextClass) {
+                            const audioCtx = new AudioContextClass();
+                            const osc = audioCtx.createOscillator();
+                            const gain = audioCtx.createGain();
+                            osc.connect(gain); gain.connect(audioCtx.destination);
+                            osc.type = 'sine'; osc.frequency.value = 880; 
+                            gain.gain.setValueAtTime(0.2, audioCtx.currentTime); 
+                            osc.start(); osc.stop(audioCtx.currentTime + 0.2); 
+                        }
+                    } catch(e) { console.log("音の再生がブロックされました"); }
+                    setTimeout(() => { alert("⏰ 時間になりました！"); }, 50);
+                } 
+            }, 1000);
+        }
+        function stopTimer() { clearInterval(tmr); }
+
+        const scr = document.getElementById("calc-screen"); let cIn = "0", formula = "";      
+        function pressNum(v) { if (cIn === "0" && v !== ".") cIn = v; else cIn += v; formula += v; scr.value = cIn; }
+        function pressOperator(o) { let d = ""; if (o === "+") d = " ＋ "; if (o === "-") d = " － "; if (o === "*") d = " × "; if (o === "/") d = " ÷ "; cIn = "0"; formula += o; scr.value = d; }
+        function clearCalc() { cIn = "0"; formula = ""; scr.value = "0"; }
+        function calculate() { try { if (formula === "") return; const r = new Function('return ' + formula)(); scr.value = Number(r.toFixed(4)); cIn = scr.value; formula = scr.value; } catch (e) { scr.value = "エラー"; formula = ""; cIn = "0"; } }
+
+        let cvs = document.getElementById('paintCanvas'), ctx = cvs.getContext('2d'), cPik = document.getElementById('colorPicker'), lW = document.getElementById('lineWidth'), drawing = false, mode = 'select', sX, sY, snap;
+        ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, cvs.width, cvs.height); document.getElementById('select').classList.add('active-purple');
+
+        cvs.addEventListener('mousedown', (e) => {
+            drawing = true; const r = cvs.getBoundingClientRect();
+            sX = (e.clientX - r.left) * (cvs.width / r.width); sY = (e.clientY - r.top) * (cvs.height / r.height);
+            ctx.beginPath(); ctx.moveTo(sX, sY); snap = ctx.getImageData(0, 0, cvs.width, cvs.height); if (mode === 'brush' || mode === 'eraser') dwn(e);
+        });
+        cvs.addEventListener('mousemove', dwn);
+        window.addEventListener('mouseup', (e) => {
+            if (!drawing) return; drawing = false;
+            if (mode === 'bucket') { ctx.fillStyle = cPik.value; ctx.fillRect(0, 0, cvs.width, cvs.height); }
+            else if (mode === 'text') { let t = prompt("文字を入力："); if (t) { ctx.fillStyle = cPik.value; ctx.font = `${lW.value * 3}px sans-serif`; ctx.fillText(t, sX, sY); } }
+            else if (mode === 'select' || mode === 'reshape') { alert(`「${mode === 'select' ? '選択' : '形を変える'}」モード！`); }
+            ctx.beginPath();
+        });
+        function setMode(b) { document.querySelectorAll('.tool-btn').forEach(x => x.classList.remove('active-purple')); b.classList.add('active-purple'); mode = b.id; }
+        function dwn(e) {
+            if (!drawing) return; const r = cvs.getBoundingClientRect(); const cX = (e.clientX - r.left) * (cvs.width / r.width), cY = (e.clientY - r.top) * (cvs.height / r.height);
+            ctx.lineWidth = lW.value; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            if (mode === 'brush') { ctx.strokeStyle = cPik.value; ctx.lineTo(cX, cY); ctx.stroke(); } 
+            else if (mode === 'eraser') { ctx.strokeStyle = '#ffffff'; ctx.lineTo(cX, cY); ctx.stroke(); } 
+            else if (mode === 'line') { ctx.putImageData(snap, 0, 0); ctx.strokeStyle = cPik.value; ctx.beginPath(); ctx.moveTo(sX, sY); ctx.lineTo(cX, cY); ctx.stroke(); } 
+            else if (mode === 'rect') { ctx.putImageData(snap, 0, 0); ctx.strokeStyle = cPik.value; ctx.strokeRect(sX, sY, cX - sX, cY - sY); } 
+            else if (mode === 'circle') { ctx.putImageData(snap, 0, 0); ctx.strokeStyle = cPik.value; ctx.beginPath(); let rad = Math.sqrt(Math.pow(cX - sX, 2) + Math.pow(cY - sY, 2)); ctx.arc(sX, sY, rad, 0, 2 * Math.PI); ctx.stroke(); }
+        }
+        document.getElementById('clearBtn').addEventListener('click', () => { if (confirm('全部消す？')) { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, cvs.width, cvs.height); } });
+        document.getElementById('downloadBtn').addEventListener('click', () => { const a = document.createElement('a'); a.download = 'picture.png'; a.href = cvs.toDataURL(); a.click(); });
+    </script>
+</body>    <script>
+        function clock() {
+            const ima = new Date(); let h = ima.getHours(), m = ima.getMinutes(), s = ima.getSeconds();
+            const tag = document.getElementById("aisatsu");
+            if (tag) { if (h >= 5 && h < 11) tag.textContent = "おはようございます！"; else if (h >= 11 && h < 18) tag.textContent = "こんにちは！"; else tag.textContent = "こんばんは！"; }
+            let y = ima.getFullYear(), mon = ima.getMonth() + 1, d = ima.getDate(), w = ["日", "月", "火", "水", "木", "金", "土"][ima.getDay()];
+            h = String(h).padStart(2,'0'); m = String(m).padStart(2,'0'); s = String(s).padStart(2,'0');
+            document.getElementById("hizuke").textContent = `${y}年${mon}月${d}日（${w}）`;
+            document.getElementById("tokei").textContent = `${h}:${m}:${s}`;
+        }
+        setInterval(clock, 1000); clock();
+
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+                document.getElementById('webcam').srcObject = stream;
+            } catch (err) { alert("カメラが見つかりません"); }
+        }
+        function takePhoto() {
+            const video = document.getElementById('webcam'); const canvas = document.getElementById('photoCanvas');
+            if (!video.srcObject) { alert("「映す」を押してね！"); return; }
+            const ctx = canvas.getContext('2d'); canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+            ctx.translate(canvas.width, 0); ctx.scale(-1, 1); ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const a = document.createElement('a'); a.download = 'photo.png'; a.href = canvas.toDataURL(); a.click();
+        }
+
+        function addComment() {
+            const i = document.getElementById("comment-input"); if (!i || i.value === "") return; 
+            const b = document.createElement("div"); b.className = "comment-box"; b.textContent = i.value;
+            document.getElementById("comment-list").insertBefore(b, document.getElementById("comment-list").firstChild); i.value = "";
+        }
+
+        // ⏱ タイマー（音がしっかり鳴り、エラーを起こさない安全バージョン）
+        let tmr, tLeft = 0;
+        function updTmr() { 
+            let m = String(Math.floor(tLeft / 60)).padStart(2,'0'), s = String(tLeft % 60).padStart(2,'0'); 
+            document.getElementById("timer-display").textContent = `${m}:${s}`; 
+        }
+        function startTimer() {
+            clearInterval(tmr); const i = document.getElementById("timer-input");
+            if (tLeft <= 0 || i.value !== "") { tLeft = parseInt(i.value, 10); i.value = ""; }
+            if (isNaN(tLeft) || tLeft <= 0) { alert("秒数を入力してください！"); return; }
+            updTmr(); 
+            tmr = setInterval(() => { 
+                tLeft--; 
+                updTmr(); 
+                if (tLeft <= 0) { 
+                    clearInterval(tmr); 
+                    try {
+                        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                        if (AudioContextClass) {
+                            const audioCtx = new AudioContextClass();
+                            const osc = audioCtx.createOscillator();
+                            const gain = audioCtx.createGain();
+                            osc.connect(gain); gain.connect(audioCtx.destination);
+                            osc.type = 'sine'; osc.frequency.value = 880; 
+                            gain.gain.setValueAtTime(0.2, audioCtx.currentTime); 
+                            osc.start(); osc.stop(audioCtx.currentTime + 0.2); 
+                        }
+                    } catch(e) { console.log("音の再生がブロックされました"); }
+                    setTimeout(() => { alert("⏰ 時間になりました！"); }, 50);
                 } 
             }, 1000);
         }
@@ -171,4 +281,4 @@
 </body>
 </html>
 
-    </div>
+</html>
