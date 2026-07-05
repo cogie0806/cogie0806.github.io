@@ -2,6 +2,8 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <!-- 📱 スマホでも文字やボタンを押しやすくするための設定だよ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>cogie0806のホームページ</title>
     
     <style>
@@ -126,7 +128,6 @@
         .link-btn:hover {
             background-color: #059669; 
         }
-        /* 🤖 新しいAIボタンだけ青色にするよ */
         .ai-btn {
             background-color: #3b82f6;
         }
@@ -204,6 +205,16 @@
         .calc-buttons button.equal {
             background-color: #3b82f6; 
         }
+
+        /* 📱 スマホのときだけ見た目を変える魔法のコード */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column; /* 👈 メニューを縦に並べるよ */
+            }
+            .right-menu {
+                width: 100%; /* 👈 メニューの幅を画面いっぱいに広げるよ */
+            }
+        }
     </style>
 
 </head>
@@ -237,7 +248,7 @@
             <h3>メニュー</h3>
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
-            <!-- 🤖 ここに新しいAIボタンを取り付けたよ！ -->
+            <!-- 🤖 あなたが直してくれた正しいハイフン付きのURLだよ！ -->
             <a class="link-btn ai-btn" href="https://cogie0806.github.io/AI-cogie0806-/" target="_blank">🤖 AI/cogie0806をひらく</a>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
