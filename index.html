@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 🖼️ 地球のマークを cogie0806.jpg に変える魔法のコードだよ -->
     <link rel="icon" href="cogie0806.jpg" type="image/jpeg">
     <title>cogie0806のホームページ</title>
     
@@ -249,7 +248,7 @@
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
             <a class="link-btn ai-btn" href="https://cogie0806.github.io/AI-cogie0806-/" target="_blank">🤖 AI/cogie0806をひらく</a>
-            <a class="link-btn" href="https://cogie0806.github.io/https-cogie0806.github.io-oekaki/" target="_blank">🖌スクラッチ風ペイントエディタを開く</a>
+            <a class="link-btn" href="https://cogie0806.github.io/https-cogie0806.github.io-oekaki/" target="_blank">🎨 スクラッチ風ペイントエディタで絵を描く</a>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
             <!-- ⏱ タイマー -->
@@ -259,6 +258,7 @@
                 <div id="timer-display">00:00</div>
                 <div class="timer-buttons">
                     <button id="start-btn" onclick="startTimer()">スタート</button>
+                    <!-- 🛑 このボタンを押すと音が止まるよ -->
                     <button id="stop-btn" onclick="stopTimer()">ストップ</button>
                 </div>
             </div>
@@ -395,36 +395,13 @@
             link.click();
         }
 
-        /* ⏱ タイマー用の処理 */
+        /* ⏱ タイマー用の処理（se (1).mp3 をずっと鳴らすよ！） */
         let timerCountdown;
         let timeLeft = 0;
-        let audioCtx = null;
-
-        function playTimerSound() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
-            let count = 0;
-            let interval = setInterval(() => {
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.1); 
-                
-                count++;
-                if (count >= 5) { 
-                    clearInterval(interval);
-                }
-            }, 200);
-        }
+        // あなたの用意した se (1).mp3 を読み込むための設定
+        let timerAudio = new Audio("se (1).mp3");
+        // 音をずーっとループ再生させる魔法の設定だよ
+        timerAudio.loop = true;
 
         function updateTimerDisplay() {
             let minutes = Math.floor(timeLeft / 60);
@@ -435,11 +412,11 @@
         }
 
         function startTimer() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
             clearInterval(timerCountdown);
+            // 新しくスタートするときは、前の音を一度止めて最初に戻すよ
+            timerAudio.pause();
+            timerAudio.currentTime = 0;
+
             const inputVal = document.getElementById("timer-input").value;
             
             if (timeLeft <= 0 || inputVal !== "") {
@@ -460,13 +437,17 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(timerCountdown);
-                    playTimerSound(); 
+                    // ⏰ 0秒になったら、ストップボタンを押すまでずっと鳴り続けるよ！
+                    timerAudio.play(); 
                 }
             }, 1000);
         }
 
         function stopTimer() {
             clearInterval(timerCountdown);
+            // 🛑 ストップボタンが押されたら、鳴っている音を止めるよ
+            timerAudio.pause();
+            timerAudio.currentTime = 0;
         }
 
         /* 🧮 電卓用の処理 */
