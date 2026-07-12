@@ -89,7 +89,6 @@
         #download-canvas {
             display: none;
         }
-
         .comment-box {
             background: rgba(255, 255, 255, 0.2);
             padding: 10px;
@@ -206,6 +205,15 @@
             background-color: #3b82f6; 
         }
 
+        /* 🪄 ボタンの動きを滑らかにする魔法 */
+        .link-btn, button {
+            transition: all 0.3s ease;
+        }
+        .link-btn:hover, button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column; 
@@ -246,11 +254,11 @@
         <div class="right-menu">
             <h3>メニュー</h3>
             
-            <a class="link-btn ai-btn" href="https://cogie0806.github.io/AI-cogie0806-/" target="_blank">🤖 AI/cogie0806をひらく</a>
-            <a class="link-btn ai-btn" href="https://cogie0806.github.io/https-cogie0806.github.io-oekaki/" target="_blank">🎨 スクラッチ風ペイントエディタで絵を描く</a>
+            <a class="link-btn ai-btn" href="https://github.io" target="_blank">🤖 AI/cogie0806をひらく</a>
+            <a class="link-btn ai-btn" href="https://github.io" target="_blank">🎨 スクラッチ風ペイントエディタで絵を描く</a>
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
-            <a class="link-btn" href="https://chat.google.com/app/home" target="_blank">💬 google chatでチャットする</a>
+            <a class="link-btn" href="https://google.com" target="_blank">💬 google chatでチャットする</a>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
             <!-- ⏱ タイマー -->
@@ -272,25 +280,30 @@
                 <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 電卓</p>
                 <input type="text" id="calc-screen" readonly value="0">
                 <div class="calc-buttons">
+                    <!-- 1行目 -->
                     <button class="clear" onclick="clearCalc()">けす</button>
                     <button class="operator" onclick="pressOperator('/')">÷</button>
                     <button class="operator" onclick="pressOperator('*')">×</button>
                     <button class="operator" onclick="pressOperator('-')">－</button>
                     
+                    <!-- 2行目 -->
                     <button onclick="pressNum('7')">7</button>
                     <button onclick="pressNum('8')">8</button>
                     <button onclick="pressNum('9')">9</button>
                     <button class="operator" onclick="pressOperator('+')">＋</button>
                     
+                    <!-- 3行目 -->
                     <button onclick="pressNum('4')">4</button>
                     <button onclick="pressNum('5')">5</button>
                     <button onclick="pressNum('6')">6</button>
-                    <button class="equal" style="grid-row: span 2; height: 100%;" onclick="calculate()">＝</button>
+                    <button class="equal" style="grid-column: 4; grid-row: 3 / span 2; height: 100%;" onclick="calculate()">＝</button>
                     
+                    <!-- 4行目 -->
                     <button onclick="pressNum('1')">1</button>
                     <button onclick="pressNum('2')">2</button>
                     <button onclick="pressNum('3')">3</button>
                     
+                    <!-- 5行目 -->
                     <button style="grid-column: span 2;" onclick="pressNum('0')">0</button>
                     <button onclick="pressNum('.')">.</button>
                 </div>
@@ -308,9 +321,10 @@
             <button onclick="addComment()">送信する</button>
         </div>
 
-    </div> 
-
+    </div>
+    <!-- 🧠 各種スクリプト（時計、コメント保存、鏡、タイマー、電卓） -->
     <script>
+        // 1. 時計と挨拶の更新
         function tokeiWoUgokasul() {
             const ima = new Date(); 
             let h = ima.getHours();
@@ -344,20 +358,44 @@
         setInterval(tokeiWoUgokasul, 1000);
         tokeiWoUgokasul();
 
+        // 2. コメントの自動保存機能（LocalStorage）
+        window.addEventListener('DOMContentLoaded', loadComments);
+
         function addComment() {
             const inputTag = document.getElementById("comment-input");
-            const commentText = inputTag.value; 
+            const commentText = inputTag.value.trim(); 
 
             if (commentText === "") return; 
 
+            // 画面に新しいコメントを追加
+            createCommentDOM(commentText);
+
+            // ブラウザに保存する
+            saveCommentToStorage(commentText);
+
+            inputTag.value = "";
+        }
+
+        function createCommentDOM(text) {
             const newBox = document.createElement("div");
             newBox.className = "comment-box";
-            newBox.textContent = commentText;
+            newBox.textContent = text;
 
             const listTag = document.getElementById("comment-list");
             listTag.insertBefore(newBox, listTag.firstChild);
+        }
 
-            inputTag.value = "";
+        function saveCommentToStorage(text) {
+            let comments = JSON.parse(localStorage.getItem("cogie_comments")) || [];
+            comments.push(text);
+            localStorage.setItem("cogie_comments", JSON.stringify(comments));
+        }
+
+        function loadComments() {
+            let comments = JSON.parse(localStorage.getItem("cogie_comments")) || [];
+            comments.forEach(text => {
+                createCommentDOM(text);
+            });
         }
 
         /* 🪞 鏡と写真ダウンロードの処理 */
@@ -397,12 +435,10 @@
             link.click();
         }
 
-        /* ⏱ タイマー用の処理（se (1).mp3 をずっと鳴らすよ！） */
+        /* ⏱ タイマー用の処理 */
         let timerCountdown;
         let timeLeft = 0;
-        // あなたの用意した se (1).mp3 を読み込むための設定
         let timerAudio = new Audio("se (1).mp3");
-        // 音をずーっとループ再生させる魔法の設定だよ
         timerAudio.loop = true;
 
         function updateTimerDisplay() {
@@ -415,7 +451,6 @@
 
         function startTimer() {
             clearInterval(timerCountdown);
-            // 新しくスタートするときは、前の音を一度止めて最初に戻すよ
             timerAudio.pause();
             timerAudio.currentTime = 0;
 
@@ -439,7 +474,6 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(timerCountdown);
-                    // ⏰ 0秒になったら、ストップボタンを押すまでずっと鳴り続けるよ！
                     timerAudio.play(); 
                 }
             }, 1000);
@@ -447,12 +481,11 @@
 
         function stopTimer() {
             clearInterval(timerCountdown);
-            // 🛑 ストップボタンが押されたら、鳴っている音を止めるよ
             timerAudio.pause();
             timerAudio.currentTime = 0;
         }
 
-        /* 🧮 電卓用の処理 */
+        /* 🧮 電卓用の処理（バグ修正版） */
         const screen = document.getElementById("calc-screen");
         let currentInput = "0"; 
         let formula = "";      
@@ -474,8 +507,23 @@
             if (op === "*") displayOp = " × ";
             if (op === "/") displayOp = " ÷ ";
 
+            if (formula === "") {
+                if (op === "-") {
+                    formula = "-";
+                    screen.value = " － ";
+                    return;
+                }
+                return;
+            }
+
+            const lastChar = formula.slice(-1);
+            if (["+", "-", "*", "/"].includes(lastChar)) {
+                formula = formula.slice(0, -1) + op;
+            } else {
+                formula += op;
+            }
+
             currentInput = "0";
-            formula += op;
             screen.value = displayOp;
         }
 
