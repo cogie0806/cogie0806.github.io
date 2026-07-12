@@ -319,6 +319,7 @@
 
             <input type="text" id="comment-input" placeholder="ここに文字を書いてね">
             <button onclick="addComment()">送信する</button>
+            <button onclick="clearAllComments()" style="background-color: #ef4444; margin-top: 10px;">コメントをすべて消す</button>
         </div>
 
     </div>
@@ -396,6 +397,24 @@
             comments.forEach(text => {
                 createCommentDOM(text);
             });
+        }
+
+        // コメントをすべて消去する関数
+        function clearAllComments() {
+            if (confirm("すべてのコメントを完全に消去してもよろしいですか？")) {
+                // ブラウザの保存データを削除
+                localStorage.removeItem("cogie_comments");
+
+                // 画面上のコメントリストをクリア
+                const listTag = document.getElementById("comment-list");
+                listTag.innerHTML = "";
+
+                // 初期メッセージを復活させる
+                const defaultBox = document.createElement("div");
+                defaultBox.className = "comment-box";
+                defaultBox.textContent = "ホームページへようこそ！";
+                listTag.appendChild(defaultBox);
+            }
         }
 
         /* 🪞 鏡と写真ダウンロードの処理 */
@@ -485,7 +504,7 @@
             timerAudio.currentTime = 0;
         }
 
-        /* 🧮 電卓用の処理（バグ修正版） */
+        /* 🧮 電卓用の処理 */
         const screen = document.getElementById("calc-screen");
         let currentInput = "0"; 
         let formula = "";      
