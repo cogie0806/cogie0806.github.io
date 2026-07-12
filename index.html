@@ -8,7 +8,7 @@
     
     <style>
         body {
-            /* JavaScriptで背景を切り替えるため、初期値を指定しておきます */
+            /* JavaScriptで背景を切り替えるため、初期値を指定します */
             background-image: url("bg.jpg");
             background-size: cover;           
             background-position: center;      
@@ -201,7 +201,7 @@
         #start-btn { background-color: #10b981; }
         #stop-btn { background-color: #ef4444; }
 
-        /* 🧮 電卓のデザイン */
+        /* 🧮 電卓のデザイン（💡ここがボタンを4列に整列させる超重要な命令です！） */
         .calc-box {
             background: rgba(255, 255, 255, 0.1);
             padding: 12px;
@@ -303,10 +303,8 @@
                 <input type="file" id="bg-uploader" accept="image/gif, image/png, image/jpeg, image/jpg" style="font-size: 12px;" onchange="uploadBackground(event)">
             </div>
             
-            <!-- 💡 特定のテキストをスクリプトで識別できるように id="shoukai-text" を付与 -->
             <p id="shoukai-text" style="margin-top: 20px;">はじめてホームページを作りました！</p>
         </div>
-
         <!-- 👉 右がわ：メニュー -->
         <div class="right-menu">
             <h3>メニュー</h3>
@@ -355,7 +353,7 @@
 
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
-            <!-- 🧮 電卓 -->
+            <!-- 🧮 電卓（💡この閉じタグの配置ミスがはみ出しバグの最大の原因でした！） -->
             <div class="calc-box">
                 <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 電卓</p>
                 <input type="text" id="calc-screen" readonly value="0">
@@ -369,7 +367,26 @@
                     <!-- 2行目 -->
                     <button onclick="pressNum('7')">7</button>
                     <button onclick="pressNum('8')">8</button>
-9＋456＝1230.            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
+                    <button onclick="pressNum('9')">9</button>
+                    <button class="operator" onclick="pressOperator('+')">＋</button>
+                    
+                    <!-- 3行目 -->
+                    <button onclick="pressNum('4')">4</button>
+                    <button onclick="pressNum('5')">5</button>
+                    <button onclick="pressNum('6')">6</button>
+                    <button class="equal" style="grid-column: 4; grid-row: 3 / span 2; height: 100%;" onclick="calculate()">＝</button>
+                    
+                    <!-- 4行目 -->
+                    <button onclick="pressNum('1')">1</button>
+                    <button onclick="pressNum('2')">2</button>
+                    <button onclick="pressNum('3')">3</button>
+                    
+                    <!-- 5行目 -->
+                    <button style="grid-column: span 2;" onclick="pressNum('0')">0</button>
+                    <button onclick="pressNum('.')">.</button>
+                </div>
+            </div>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
             <p>💬 コメントをおねがいします！</p>
             
@@ -395,13 +412,12 @@
             
             const aisatsuTag = document.getElementById("aisatsu");
             
-            // 💡 後ほど背景切り替え時に黒文字クラスが付与されるため、ここではテキストの中身のみを変更します
             if (h >= 5 && h < 11) {
-                aisatsuTag.childNodes[0].nodeValue = "おはようございます！";
+                aisatsuTag.textContent = "おはようございます！";
             } else if (h >= 11 && h < 18) {
-                aisatsuTag.childNodes[0].nodeValue = "こんにちは！";
+                aisatsuTag.textContent = "こんにちは！";
             } else {
-                aisatsuTag.childNodes[0].nodeValue = "こんばんは！";
+                aisatsuTag.textContent = "こんばんは！";
             }
 
             let year = ima.getFullYear();
@@ -436,10 +452,7 @@
 
             if (commentText === "") return; 
 
-            // 画面に新しいコメントを追加
             createCommentDOM(commentText);
-
-            // ブラウザに保存する
             saveCommentToStorage(commentText);
 
             inputTag.value = "";
@@ -479,7 +492,6 @@
                 listTag.appendChild(defaultBox);
             }
         }
-
         /* 🎨 4. 背景切り替え ＆ 大容量永久保存（IndexedDB）機能 */
         let bgDb = null;
         const bgSelector = document.getElementById("bg-selector");
@@ -493,9 +505,8 @@
             };
             request.onsuccess = (e) => {
                 bgDb = e.target.result;
-                loadUploadedBgList(); // 保存されているマイ背景リストを読み込む
+                loadUploadedBgList();
                 
-                // 前回選んでいた背景があれば復活させる
                 const lastBg = localStorage.getItem("cogie_last_bg");
                 if (lastBg) {
                     bgSelector.value = lastBg;
@@ -509,9 +520,8 @@
             const val = bgSelector.value;
             if (!val) return;
 
-            localStorage.setItem("cogie_last_bg", val); // 選択を記憶
+            localStorage.setItem("cogie_last_bg", val);
 
-            // 💡 「動く音符 (music1.gif)」が選ばれているときだけ body に dark-text クラスを付ける処理
             if (val === "music1.gif") {
                 document.body.classList.add("dark-text");
             } else {
@@ -537,7 +547,7 @@
 
         // 自分で背景画像をアップロードして永久保存する処理
         function uploadBackground(event) {
-            const file = event.target.files[0]; // 確実に1番目のファイルを取得
+            const file = event.target.files[0];
             if (!file) return;
 
             const transaction = bgDb.transaction(["backgrounds"], "readwrite");
@@ -551,7 +561,7 @@
             const addReq = store.put(bgData);
             addReq.onsuccess = () => {
                 alert(`背景「${file.name}」をブラウザに保存しました！`);
-                loadUploadedBgList(file.name); // リストを更新して自動選択
+                loadUploadedBgList(file.name);
                 event.target.value = ""; 
             };
         }
@@ -582,12 +592,12 @@
                 }
             };
         }
+
         /* 🎵 5. 音楽プレイヤー＆大容量永久保存（IndexedDB）機能 */
         let db = null;
         const player = document.getElementById("bgm-player");
         const selector = document.getElementById("audio-selector");
 
-        // 音楽用データベースの初期化
         function initAudioDB() {
             const request = indexedDB.open("CogieAudioDB", 1);
             request.onupgradeneeded = (e) => {
@@ -600,7 +610,6 @@
             };
         }
 
-        // 曲が選択されたときの切り替え処理
         function changeMusic() {
             const selectedValue = selector.value;
             if (!selectedValue) {
@@ -627,9 +636,8 @@
             }
         }
 
-        // ファイルアップロード時にIndexedDBへ保存する処理
         function uploadMusic(event) {
-            const file = event.target.files[0]; // 修正：1番目のファイルを確実に取得
+            const file = event.target.files[0];
             if (!file) return;
 
             if (file.type !== "audio/mp3" && !file.name.endsWith(".mp3")) {
@@ -651,12 +659,8 @@
                 loadUploadedList();
                 event.target.value = ""; 
             };
-            addReq.onerror = () => {
-                alert("保存に失敗しました。ブラウザの空き容量が足りない可能性があります。");
-            };
         }
 
-        // データベースから保存した曲を読み込んでメニューに追加する処理
         function loadUploadedList() {
             const transaction = db.transaction(["songs"], "readonly");
             const store = transaction.objectStore("songs");
@@ -766,10 +770,10 @@
             timerAudio.currentTime = 0;
         }
 
-        /* 🧮 8. 電卓用の処理 */
+              /* 🧮 8. 電卓用の処理 */
         const screen = document.getElementById("calc-screen");
         let currentInput = "0"; 
-        let formula = "";      
+        let formula = ""; // 計算式を記憶する変数を追加
 
         function pressNum(val) {
             if (currentInput === "0" && val !== ".") {
@@ -814,6 +818,7 @@
             screen.value = "0";
         }
 
+        // 💡 抜けていた一番大事な計算関数を追加しました！
         function calculate() {
             try {
                 if (formula === "") return;
