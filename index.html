@@ -89,6 +89,30 @@
         #download-canvas {
             display: none;
         }
+
+        /* 🎵 音楽プレイヤーのデザイン */
+        .player-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        .player-select {
+            background: #1f2937;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 13px;
+        }
+        .audio-credit {
+            font-size: 10px;
+            color: #ccc;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .audio-credit a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
         .comment-box {
             background: rgba(255, 255, 255, 0.2);
             padding: 10px;
@@ -97,7 +121,7 @@
             font-size: 14px;
         }
 
-        input, button {
+        input, button, select {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -206,10 +230,10 @@
         }
 
         /* 🪄 ボタンの動きを滑らかにする魔法 */
-        .link-btn, button {
+        .link-btn, button, select {
             transition: all 0.3s ease;
         }
-        .link-btn:hover, button:hover {
+        .link-btn:hover, button:hover, select:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
@@ -261,6 +285,29 @@
             <a class="link-btn" href="https://google.com" target="_blank">💬 google chatでチャットする</a>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
+
+            <!-- 🎵 音楽プレイヤー -->
+            <div class="player-box">
+                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; text-align: center;">🎵 音楽プレイヤー</p>
+                <select id="audio-selector" class="player-select" onchange="changeMusic()">
+                    <option value="">-- 曲をえらんでね --</option>
+                    <option value="erize.mp3">エリーゼのために</option>
+                    <option value="Jingle_Bells-MB03-1(Reverb-Slow).mp3">ジングルベル(オルゴール)</option>
+                </select>
+                <audio id="bgm-player" controls style="width: 100%; margin-top: 8px; height: 32px;"></audio>
+                
+                <!-- 📁 ファイルアップロード機能 -->
+                <p style="margin: 10px 0 3px 0; font-size: 12px; text-align: center;">📥 じぶんのmp3を追加して保存する</p>
+                <input type="file" id="audio-uploader" accept="audio/mp3" style="font-size: 12px;" onchange="uploadMusic(event)">
+                
+                <!-- 📋 クレジット表示 -->
+                <div class="audio-credit">
+                    BGM提供：<a href="https://pocket-se.info" target="_blank" rel="noopener">ポケットサウンド</a>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
+            
             <!-- ⏱ タイマー -->
             <div class="timer-box">
                 <p style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
@@ -308,7 +355,6 @@
                     <button onclick="pressNum('.')">.</button>
                 </div>
             </div>
-
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
             <p>💬 コメントをおねがいします！</p>
@@ -323,7 +369,8 @@
         </div>
 
     </div>
-    <!-- 🧠 各種スクリプト（時計、コメント保存、鏡、タイマー、電卓） -->
+
+    <!-- 🧠 各種スクリプト（時計、コメント保存、音楽プレイヤー） -->
     <script>
         // 1. 時計と挨拶の更新
         function tokeiWoUgokasul() {
@@ -359,9 +406,13 @@
         setInterval(tokeiWoUgokasul, 1000);
         tokeiWoUgokasul();
 
-        // 2. コメントの自動保存機能（LocalStorage）
-        window.addEventListener('DOMContentLoaded', loadComments);
+        // 2. 画面読み込み時の初期化処理
+        window.addEventListener('DOMContentLoaded', () => {
+            loadComments();
+            initAudioDB(); // 音楽データベースを準備する
+        });
 
+        // 3. コメントの自動保存機能（LocalStorage）
         function addComment() {
             const inputTag = document.getElementById("comment-input");
             const commentText = inputTag.value.trim(); 
@@ -402,22 +453,117 @@
         // コメントをすべて消去する関数
         function clearAllComments() {
             if (confirm("すべてのコメントを完全に消去してもよろしいですか？")) {
-                // ブラウザの保存データを削除
                 localStorage.removeItem("cogie_comments");
-
-                // 画面上のコメントリストをクリア
                 const listTag = document.getElementById("comment-list");
                 listTag.innerHTML = "";
 
-                // 初期メッセージを復活させる
                 const defaultBox = document.createElement("div");
                 defaultBox.className = "comment-box";
                 defaultBox.textContent = "ホームページへようこそ！";
                 listTag.appendChild(defaultBox);
             }
         }
+        /* 🎵 4. 音楽プレイヤー＆大容量永久保存（IndexedDB）機能 */
+        let db = null;
+        const player = document.getElementById("bgm-player");
+        const selector = document.getElementById("audio-selector");
 
-        /* 🪞 鏡と写真ダウンロードの処理 */
+        // 大容量データベースの初期化
+        function initAudioDB() {
+            const request = indexedDB.open("CogieAudioDB", 1);
+            request.onupgradeneeded = (e) => {
+                db = e.target.result;
+                db.createObjectStore("songs", { keyPath: "name" });
+            };
+            request.onsuccess = (e) => {
+                db = e.target.result;
+                loadUploadedList(); // 保存されている曲のリストを読み込む
+            };
+        }
+
+        // 曲が選択されたときの切り替え処理
+        function changeMusic() {
+            const selectedValue = selector.value;
+            if (!selectedValue) {
+                player.src = "";
+                return;
+            }
+
+            // アップロードされた曲（カスタム曲）の再生処理
+            if (selectedValue.startsWith("custom_")) {
+                const songName = selectedValue.replace("custom_", "");
+                const transaction = db.transaction(["songs"], "readonly");
+                const store = transaction.objectStore("songs");
+                const getReq = store.get(songName);
+
+                getReq.onsuccess = () => {
+                    if (getReq.result) {
+                        const blobURL = URL.createObjectURL(getReq.result.blob);
+                        player.src = blobURL;
+                        player.play();
+                    }
+                };
+            } else {
+                // フォルダ内にある通常曲の再生処理
+                player.src = selectedValue;
+                player.play();
+            }
+        }
+
+        // ファイルアップロード時にIndexedDBへ保存する処理
+        function uploadMusic(event) {
+            const file = event.target.files[0]; // 修正：1番目のファイルを正しく取得
+            if (!file) return;
+
+            if (file.type !== "audio/mp3" && !file.name.endsWith(".mp3")) {
+                alert("mp3形式のファイルを選択してください！");
+                return;
+            }
+
+            const transaction = db.transaction(["songs"], "readwrite");
+            const store = transaction.objectStore("songs");
+            
+            const songData = {
+                name: file.name,
+                blob: file
+            };
+
+            const addReq = store.put(songData);
+            addReq.onsuccess = () => {
+                alert(`「${file.name}」をブラウザに保存しました！`);
+                loadUploadedList(); // セレクトボックスのリストを更新
+                event.target.value = ""; 
+            };
+            addReq.onerror = () => {
+                alert("保存に失敗しました。ブラウザの空き容量が足りない可能性があります。");
+            };
+        }
+
+        // データベースから保存した曲を読み込んでメニューに追加する処理
+        function loadUploadedList() {
+            const transaction = db.transaction(["songs"], "readonly");
+            const store = transaction.objectStore("songs");
+            const cursorReq = store.openCursor();
+
+            // 古いカスタム曲の選択肢を一度リセットする
+            const options = Array.from(selector.options);
+            options.forEach(opt => {
+                if (opt.value.startsWith("custom_")) selector.removeChild(opt);
+            });
+
+            cursorReq.onsuccess = (e) => {
+                const cursor = e.target.result;
+                if (cursor) {
+                    const option = document.createElement("option");
+                    option.value = "custom_" + cursor.value.name;
+                    option.textContent = "⭐ マイソング: " + cursor.value.name;
+                    selector.appendChild(option);
+                    cursor.continue();
+                }
+            };
+        }
+
+        /* 🪞 5. 鏡と写真ダウンロードの処理 */
         async function startMirror() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -454,7 +600,7 @@
             link.click();
         }
 
-        /* ⏱ タイマー用の処理 */
+        /* ⏱ 6. タイマー用の処理 */
         let timerCountdown;
         let timeLeft = 0;
         let timerAudio = new Audio("se (1).mp3");
@@ -504,7 +650,7 @@
             timerAudio.currentTime = 0;
         }
 
-        /* 🧮 電卓用の処理 */
+        /* 🧮 7. 電卓用の処理 */
         const screen = document.getElementById("calc-screen");
         let currentInput = "0"; 
         let formula = "";      
