@@ -21,6 +21,13 @@
             transition: background-image 0.5s ease; /* 背景がふわっと変わるアニメーション */
         }
 
+        /* 💡 動く音符の時だけ黒文字にするための設定 */
+        body.dark-text #aisatsu,
+        body.dark-text #shoukai-text {
+            color: #000000 !important;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* 文字を見やすくする軽い影 */
+        }
+
         .container {
             display: flex;
             justify-content: space-between; 
@@ -91,7 +98,6 @@
         #download-canvas {
             display: none;
         }
-
         /* 🎨 背景切り替え・アップロードボックスのデザイン */
         .bg-change-box {
             background: rgba(0, 0, 0, 0.4);
@@ -125,6 +131,7 @@
             color: #3b82f6;
             text-decoration: none;
         }
+
         .comment-box {
             background: rgba(255, 255, 255, 0.2);
             padding: 10px;
@@ -283,7 +290,7 @@
                 <button class="shutter-btn" onclick="takePhoto()">📸 写真をダウンロード</button>
             </div>
 
-            <!-- 🎨 背景切り替え ＆ 画像アップロード（新機能！） -->
+            <!-- 🎨 背景切り替え ＆ 画像アップロード -->
             <div class="bg-change-box">
                 <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; text-align: center;">🎨 背景デザイン変更</p>
                 <select id="bg-selector" class="bg-select" onchange="changeBackground()">
@@ -296,7 +303,8 @@
                 <input type="file" id="bg-uploader" accept="image/gif, image/png, image/jpeg, image/jpg" style="font-size: 12px;" onchange="uploadBackground(event)">
             </div>
             
-            <p style="margin-top: 20px;">はじめてホームページを作りました！</p>
+            <!-- 💡 特定のテキストをスクリプトで識別できるように id="shoukai-text" を付与 -->
+            <p id="shoukai-text" style="margin-top: 20px;">はじめてホームページを作りました！</p>
         </div>
 
         <!-- 👉 右がわ：メニュー -->
@@ -361,26 +369,7 @@
                     <!-- 2行目 -->
                     <button onclick="pressNum('7')">7</button>
                     <button onclick="pressNum('8')">8</button>
-                    <button onclick="pressNum('9')">9</button>
-                    <button class="operator" onclick="pressOperator('+')">＋</button>
-                    
-                    <!-- 3行目 -->
-                    <button onclick="pressNum('4')">4</button>
-                    <button onclick="pressNum('5')">5</button>
-                    <button onclick="pressNum('6')">6</button>
-                    <button class="equal" style="grid-column: 4; grid-row: 3 / span 2; height: 100%;" onclick="calculate()">＝</button>
-                    
-                    <!-- 4行目 -->
-                    <button onclick="pressNum('1')">1</button>
-                    <button onclick="pressNum('2')">2</button>
-                    <button onclick="pressNum('3')">3</button>
-                    
-                    <!-- 5行目 -->
-                    <button style="grid-column: span 2;" onclick="pressNum('0')">0</button>
-                    <button onclick="pressNum('.')">.</button>
-                </div>
-            </div>
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
+9＋456＝1230.            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
             <p>💬 コメントをおねがいします！</p>
             
@@ -405,12 +394,14 @@
             let s = ima.getSeconds();
             
             const aisatsuTag = document.getElementById("aisatsu");
+            
+            // 💡 後ほど背景切り替え時に黒文字クラスが付与されるため、ここではテキストの中身のみを変更します
             if (h >= 5 && h < 11) {
-                aisatsuTag.textContent = "おはようございます！";
+                aisatsuTag.childNodes[0].nodeValue = "おはようございます！";
             } else if (h >= 11 && h < 18) {
-                aisatsuTag.textContent = "こんにちは！";
+                aisatsuTag.childNodes[0].nodeValue = "こんにちは！";
             } else {
-                aisatsuTag.textContent = "こんばんは！";
+                aisatsuTag.childNodes[0].nodeValue = "こんばんは！";
             }
 
             let year = ima.getFullYear();
@@ -435,7 +426,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadComments();
             initAudioDB();  // 音楽データベース初期化
-            initBgDB();     // 背景データベース初期化（新機能！）
+            initBgDB();     // 背景データベース初期化
         });
 
         // 3. コメントの自動保存機能（LocalStorage）
@@ -520,6 +511,13 @@
 
             localStorage.setItem("cogie_last_bg", val); // 選択を記憶
 
+            // 💡 「動く音符 (music1.gif)」が選ばれているときだけ body に dark-text クラスを付ける処理
+            if (val === "music1.gif") {
+                document.body.classList.add("dark-text");
+            } else {
+                document.body.classList.remove("dark-text");
+            }
+
             if (val.startsWith("custom_bg_")) {
                 const bgName = val.replace("custom_bg_", "");
                 const transaction = bgDb.transaction(["backgrounds"], "readonly");
@@ -539,7 +537,7 @@
 
         // 自分で背景画像をアップロードして永久保存する処理
         function uploadBackground(event) {
-            const file = event.target.files[0];
+            const file = event.target.files[0]; // 確実に1番目のファイルを取得
             if (!file) return;
 
             const transaction = bgDb.transaction(["backgrounds"], "readwrite");
@@ -631,7 +629,7 @@
 
         // ファイルアップロード時にIndexedDBへ保存する処理
         function uploadMusic(event) {
-            const file = event.target.files[0];
+            const file = event.target.files[0]; // 修正：1番目のファイルを確実に取得
             if (!file) return;
 
             if (file.type !== "audio/mp3" && !file.name.endsWith(".mp3")) {
