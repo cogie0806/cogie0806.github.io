@@ -12,7 +12,7 @@
             background-size: cover;           
             background-position: center;      
             background-attachment: fixed;     
-            
+            background-color: #222;
             color: #ffffff;            
             font-family: sans-serif;   
             margin: 0;
@@ -107,7 +107,7 @@
             margin-top: 15px;
         }
 
-        /* 🔮 おみくじボックスのデザイン（新機能！） */
+        /* 🔮 おみくじボックスのデザイン */
         .omikuji-box {
             background: rgba(0, 0, 0, 0.4);
             padding: 15px;
@@ -287,7 +287,6 @@
             }
         }
     </style>
-
 </head>
 <body>
 
@@ -302,7 +301,7 @@
                 <p id="tokei">00:00:00</p>
             </div>
             
-            <!-- 🪞 鏡 -->
+            <!-- 🪞 かんたん鏡（カメラ） -->
             <div class="mirror-box">
                 <p style="margin: 0 0 8px 0; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
                 <video id="mirror-video" autoplay playsinline></video>
@@ -310,21 +309,34 @@
                 <button class="mirror-btn" onclick="startMirror()">鏡をうつす</button>
                 <button class="shutter-btn" onclick="takePhoto()">📸 写真をダウンロード</button>
             </div>
-
-            <!-- 🎨 背景切り替え ＆ 画像アップロード -->
-            <div class="bg-change-box">
-                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; text-align: center;">🎨 背景デザイン変更</p>
+            <!-- 🎨 設定メニュー（最初は非表示） -->
+            <div id="setting-box" style="display: none; background: rgba(0, 0, 0, 0.5); padding: 15px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.3); max-width: 400px; margin-top: 15px;">
+                <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; text-align: center; color: #a855f7;">🛠️ 設定メニュー</p>
+                
+                <!-- 🎨 背景デザイン変更 -->
+                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🎨 背景デザイン変更</p>
                 <select id="bg-selector" class="bg-select" onchange="changeBackground()">
                     <option value="bg.jpg">windows11背景</option>
                     <option value="2054115ca660bda6ce7e56dd701de7ca_t.jpeg">にじ背景</option>
                     <option value="music1.gif">動く音符</option>
                 </select>
-                
-                <p style="margin: 10px 0 3px 0; font-size: 12px; text-align: center;">📥 じぶんの背景を追加する (.gif/.png/.jpg/.jpeg)</p>
+                <p style="margin: 8px 0 3px 0; font-size: 11px;">📥 じぶんの背景を追加する (.gif/.png/.jpg)</p>
                 <input type="file" id="bg-uploader" accept="image/gif, image/png, image/jpeg, image/jpg" style="font-size: 12px;" onchange="uploadBackground(event)">
+                
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+
+                <!-- 🗺️ タイムゾーン変更 -->
+                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🗺️ タイムゾーン（世界の時間）</p>
+                <select id="timezone-selector" style="background: #1f2937; color: white; font-size: 13px;">
+                    <option value="Asia/Tokyo">日本（東京）</option>
+                    <option value="America/New_York">アメリカ（ニューヨーク）</option>
+                    <option value="Europe/London">イギリス（ロンドン）</option>
+                    <option value="Asia/Seoul">韓国（ソウル）</option>
+                    <option value="Australia/Sydney">オーストラリア（シドニー）</option>
+                </select>
             </div>
 
-            <!-- 🔮 今日の運勢おみくじ（画面の追加パーツ！） -->
+            <!-- 🔮 今日の運勢おみくじ -->
             <div class="omikuji-box">
                 <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🔮 今日の運勢おみくじ</p>
                 <button onclick="drawOmikuji()" style="background-color: #f59e0b;">おみくじをひく</button>
@@ -338,12 +350,15 @@
         <div class="right-menu">
             <h3>メニュー</h3>
             
-            <a class="link-btn ai-btn" href="https://cogie0806.github.io/AI-cogie0806-/" target="_blank">🤖 AI/cogie0806をひらく</a>
-            <a class="link-btn ai-btn" href="https://cogie0806.github.io/https-cogie0806.github.io-oekaki/" target="_blank">🎨 スクラッチ風ペイントエディタで絵を描く</a>
+            <!-- ⚙️ 設定をひらく/とじるボタン -->
+            <button onclick="toggleSettings()" style="background-color: #a855f7; margin-bottom: 10px; font-size: 15px;">⚙️ 設定をひらく / とじる</button>
+
+            <a class="link-btn ai-btn" href="https://github.io" target="_blank">🤖 AI/cogie0806をひらく</a>
+            <a class="link-btn ai-btn" href="https://github.io" target="_blank">🎨 スクラッチ風ペイントエディタで絵を描く</a>
             <a class="link-btn" href="https://youtube.com" target="_blank">📺 YouTubeをひらく</a>
             <a class="link-btn" href="https://google.com" target="_blank">🔍 Googleで調べる</a>
-            <a class="link-btn" href="https://chat.google.com/app/home" target="_blank">💬 google chatでチャットする</a>
-            <a class="link-btn" style="background-color: #ef4444;" href="https://weather.yahoo.co.jp/weather/" target="_blank">⛅ Y!天気を開く</a>
+            <a class="link-btn" href="https://google.com" target="_blank">💬 google chatでチャットする</a>
+            <a class="link-btn" style="background-color: #ef4444;" href="https://yahoo.co.jp" target="_blank">⛅ Y!天気を開く</a>
             <a class="link-btn" style="background-color: #ef4444;" href="https://yahoo.co.jp" target="_blank">🔴 Yahoo!を開く</a>
             
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
@@ -358,16 +373,13 @@
                 </select>
                 <audio id="bgm-player" controls style="width: 100%; margin-top: 8px; height: 32px;"></audio>
                 
-                <!-- 📁 ファイルアップロード機能 -->
                 <p style="margin: 10px 0 3px 0; font-size: 12px; text-align: center;">📥 じぶんのmp3を追加して保存する</p>
                 <input type="file" id="audio-uploader" accept="audio/mp3" style="font-size: 12px;" onchange="uploadMusic(event)">
                 
-                <!-- 📋 クレジット表示 -->
                 <div class="audio-credit">
                     BGM提供：<a href="https://pocket-se.info" target="_blank" rel="noopener">ポケットサウンド</a>
                 </div>
             </div>
-
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
             
             <!-- ⏱ タイマー -->
@@ -377,7 +389,6 @@
                 <div id="timer-display">00:00</div>
                 <div class="timer-buttons">
                     <button id="start-btn" onclick="startTimer()">スタート</button>
-                    <!-- 🛑 このボタンを押すと音が止まるよ -->
                     <button id="stop-btn" onclick="stopTimer()">ストップ</button>
                 </div>
             </div>
@@ -389,30 +400,25 @@
                 <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 電卓</p>
                 <input type="text" id="calc-screen" readonly value="0">
                 <div class="calc-buttons">
-                    <!-- 1行目 -->
                     <button class="clear" onclick="clearCalc()">けす</button>
                     <button class="operator" onclick="pressOperator('/')">÷</button>
                     <button class="operator" onclick="pressOperator('*')">×</button>
                     <button class="operator" onclick="pressOperator('-')">－</button>
                     
-                    <!-- 2行目 -->
                     <button onclick="pressNum('7')">7</button>
                     <button onclick="pressNum('8')">8</button>
                     <button onclick="pressNum('9')">9</button>
                     <button class="operator" onclick="pressOperator('+')">＋</button>
                     
-                    <!-- 3行目 -->
                     <button onclick="pressNum('4')">4</button>
                     <button onclick="pressNum('5')">5</button>
                     <button onclick="pressNum('6')">6</button>
                     <button class="equal" style="grid-column: 4; grid-row: 3 / span 2; height: 100%;" onclick="calculate()">＝</button>
                     
-                    <!-- 4行目 -->
                     <button onclick="pressNum('1')">1</button>
                     <button onclick="pressNum('2')">2</button>
                     <button onclick="pressNum('3')">3</button>
                     
-                    <!-- 5行目 -->
                     <button style="grid-column: span 2;" onclick="pressNum('0')">0</button>
                     <button onclick="pressNum('.')">.</button>
                 </div>
@@ -432,35 +438,41 @@
         </div>
 
     </div>
-    <!-- 🧠 各種スクリプト（時計、コメント保存、おみくじ、背景・音楽プレイヤー） -->
+
+    <!-- 🧠 スクリプト部分 -->
     <script>
-        // 1. 時計と挨拶の更新
+        // 1. 時計と挨拶の更新（タイムゾーン対応版！）
         function tokeiWoUgokasul() {
-            const ima = new Date(); 
-            let h = ima.getHours();
-            let m = ima.getMinutes();
-            let s = ima.getSeconds();
+            const tzSelector = document.getElementById("timezone-selector");
+            const tz = tzSelector ? tzSelector.value : "Asia/Tokyo"; 
+
+            const options = { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false };
+            const formatter = new Intl.DateTimeFormat('ja-JP', options);
+            const parts = formatter.formatToParts(new Date());
+
+            let year, month, date, h, m, s;
+            parts.forEach(p => {
+                if (p.type === 'year') year = p.value;
+                if (p.type === 'month') month = p.value.padStart(2, '0');
+                if (p.type === 'day') date = p.value.padStart(2, '0');
+                if (p.type === 'hour') h = p.value.padStart(2, '0');
+                if (p.type === 'minute') m = p.value.padStart(2, '0');
+                if (p.type === 'second') s = p.value.padStart(2, '0');
+            });
             
+            const hoursNum = parseInt(h, 10);
             const aisatsuTag = document.getElementById("aisatsu");
-            if (h >= 5 && h < 11) {
+            if (hoursNum >= 5 && hoursNum < 11) {
                 aisatsuTag.textContent = "おはようございます！";
-            } else if (h >= 11 && h < 18) {
+            } else if (hoursNum >= 11 && hoursNum < 18) {
                 aisatsuTag.textContent = "こんにちは！";
             } else {
                 aisatsuTag.textContent = "こんばんは！";
             }
 
-            let year = ima.getFullYear();
-            let month = ima.getMonth() + 1; 
-            let date = ima.getDate();
-            let dayNum = ima.getDay(); 
+            const targetDate = new Date(new Date().toLocaleString("en-US", {timeZone: tz}));
             const yoobi = ["日", "月", "火", "水", "木", "金", "土"];
-
-            if (month < 10) month = "0" + month;
-            if (date < 10) date = "0" + date;
-            if (h < 10) h = "0" + h;
-            if (m < 10) m = "0" + m;
-            if (s < 10) s = "0" + s;
+            let dayNum = targetDate.getDay();
             
             document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobi[dayNum] + "）";
             document.getElementById("tokei").textContent = h + ":" + m + ":" + s;
@@ -468,23 +480,29 @@
         setInterval(tokeiWoUgokasul, 1000);
         tokeiWoUgokasul();
 
+        // ⚙️ 設定ボタンのひらく・とじる（トグル機能）
+        function toggleSettings() {
+            const settingBox = document.getElementById("setting-box");
+            if (settingBox.style.display === "none") {
+                settingBox.style.display = "block"; 
+            } else {
+                settingBox.style.display = "none";  
+            }
+        }
         // 2. 画面読み込み時の初期化処理
         window.addEventListener('DOMContentLoaded', () => {
             loadComments();
-            initAudioDB();  // 音楽データベース初期化
-            initBgDB();     // 背景データベース初期化
+            initAudioDB();  
+            initBgDB();     
         });
 
         // 3. コメントの自動保存機能（LocalStorage）
         function addComment() {
             const inputTag = document.getElementById("comment-input");
             const commentText = inputTag.value.trim(); 
-
             if (commentText === "") return; 
-
             createCommentDOM(commentText);
             saveCommentToStorage(commentText);
-
             inputTag.value = "";
         }
 
@@ -492,7 +510,6 @@
             const newBox = document.createElement("div");
             newBox.className = "comment-box";
             newBox.textContent = text;
-
             const listTag = document.getElementById("comment-list");
             listTag.insertBefore(newBox, listTag.firstChild);
         }
@@ -505,9 +522,7 @@
 
         function loadComments() {
             let comments = JSON.parse(localStorage.getItem("cogie_comments")) || [];
-            comments.forEach(text => {
-                createCommentDOM(text);
-            });
+            comments.forEach(text => { createCommentDOM(text); });
         }
 
         function clearAllComments() {
@@ -515,7 +530,6 @@
                 localStorage.removeItem("cogie_comments");
                 const listTag = document.getElementById("comment-list");
                 listTag.innerHTML = "";
-
                 const defaultBox = document.createElement("div");
                 defaultBox.className = "comment-box";
                 defaultBox.textContent = "ホームページへようこそ！";
@@ -523,26 +537,22 @@
             }
         }
 
-             /* 🔮 4. おみくじ機能の処理 */
+        /* 🔮 4. おみくじ機能の処理 */
         function drawOmikuji() {
             const kuji = [
                 { result: "超大吉 🌟", comment: "今日は最高の1日！やりたいことが全部うまくいくよ！" },
                 { result: "大吉 🎯", comment: "ラッキーなことが起きそう！トラックボールの充電もバッチリ！" },
-                { result: "中吉 ✨", comment: "良い運勢！お気に入りの音楽を聴くとさらにハッピーに！" },
+                { result: "中吉 ✨", comment: "良い運勢！お気に入りの音樂を聴くとさらにハッピーに！" },
                 { result: "小吉 🍀", comment: "いつも通りの平和な日。扇風機を「中」にして涼もう！" },
                 { result: "吉 🌱", comment: "コツコツ頑張ると良いことがあるよ。電卓で計算の練習をしてみる？" }
             ];
-            
             const r = Math.floor(Math.random() * kuji.length);
-            
             document.getElementById("omikuji-result").textContent = kuji[r].result;
             document.getElementById("omikuji-comment").textContent = kuji[r].comment;
         }
 
         /* 🎨 5. 背景切り替え ＆ 大容量永久保存（IndexedDB）機能 */
         let bgDb = null;
-        const bgSelector = document.getElementById("bg-selector");
-
         function initBgDB() {
             const request = indexedDB.open("CogieBgDB", 1);
             request.onupgradeneeded = (e) => {
@@ -552,16 +562,15 @@
             request.onsuccess = (e) => {
                 bgDb = e.target.result;
                 loadUploadedBgList();
-                
                 const lastBg = localStorage.getItem("cogie_last_bg");
                 if (lastBg) {
-                    bgSelector.value = lastBg;
+                    document.getElementById("bg-selector").value = lastBg;
                     changeBackground();
                 }
             };
         }
-
         function changeBackground() {
+            const bgSelector = document.getElementById("bg-selector");
             const val = bgSelector.value;
             if (!val) return;
 
@@ -578,7 +587,6 @@
                 const transaction = bgDb.transaction(["backgrounds"], "readonly");
                 const store = transaction.objectStore("backgrounds");
                 const getReq = store.get(bgName);
-
                 getReq.onsuccess = () => {
                     if (getReq.result) {
                         const blobURL = URL.createObjectURL(getReq.result.blob);
@@ -593,15 +601,9 @@
         function uploadBackground(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const transaction = bgDb.transaction(["backgrounds"], "readwrite");
             const store = transaction.objectStore("backgrounds");
-            
-            const bgData = {
-                name: file.name,
-                blob: file
-            };
-
+            const bgData = { name: file.name, blob: file };
             const addReq = store.put(bgData);
             addReq.onsuccess = () => {
                 alert(`背景「${file.name}」をブラウザに保存しました！`);
@@ -611,15 +613,14 @@
         }
 
         function loadUploadedBgList(autoSelectName = null) {
+            const bgSelector = document.getElementById("bg-selector");
             const transaction = bgDb.transaction(["backgrounds"], "readonly");
             const store = transaction.objectStore("backgrounds");
             const cursorReq = store.openCursor();
-
             const options = Array.from(bgSelector.options);
             options.forEach(opt => {
                 if (opt.value.startsWith("custom_bg_")) bgSelector.removeChild(opt);
             });
-
             cursorReq.onsuccess = (e) => {
                 const cursor = e.target.result;
                 if (cursor) {
@@ -627,7 +628,6 @@
                     option.value = "custom_bg_" + cursor.value.name;
                     option.textContent = "⭐ マイ背景: " + cursor.value.name;
                     bgSelector.appendChild(option);
-                    
                     if (autoSelectName && cursor.value.name === autoSelectName) {
                         bgSelector.value = option.value;
                         changeBackground();
@@ -660,13 +660,11 @@
                 player.src = "";
                 return;
             }
-
             if (selectedValue.startsWith("custom_")) {
                 const songName = selectedValue.replace("custom_", "");
                 const transaction = db.transaction(["songs"], "readonly");
                 const store = transaction.objectStore("songs");
                 const getReq = store.get(songName);
-
                 getReq.onsuccess = () => {
                     if (getReq.result) {
                         const blobURL = URL.createObjectURL(getReq.result.blob);
@@ -683,20 +681,13 @@
         function uploadMusic(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             if (file.type !== "audio/mp3" && !file.name.endsWith(".mp3")) {
                 alert("mp3形式のファイルを選択してください！");
                 return;
             }
-
             const transaction = db.transaction(["songs"], "readwrite");
             const store = transaction.objectStore("songs");
-            
-            const songData = {
-                name: file.name,
-                blob: file
-            };
-
+            const songData = { name: file.name, blob: file };
             const addReq = store.put(songData);
             addReq.onsuccess = () => {
                 alert(`「${file.name}」をブラウザに保存しました！`);
@@ -709,12 +700,10 @@
             const transaction = db.transaction(["songs"], "readonly");
             const store = transaction.objectStore("songs");
             const cursorReq = store.openCursor();
-
             const options = Array.from(selector.options);
             options.forEach(opt => {
                 if (opt.value.startsWith("custom_")) selector.removeChild(opt);
             });
-
             cursorReq.onsuccess = (e) => {
                 const cursor = e.target.result;
                 if (cursor) {
@@ -726,6 +715,7 @@
                 }
             };
         }
+
         /* 🪞 7. 鏡と写真ダウンロードの処理 */
         async function startMirror() {
             try {
@@ -734,28 +724,22 @@
                 videoTag.srcObject = stream;
             } catch (err) {
                 alert("カメラを開けませんでした。ロックを解除してね！");
-                console.error(err);
             }
         }
 
         function takePhoto() {
             const video = document.getElementById("mirror-video");
             const canvas = document.getElementById("download-canvas");
-            
             if (!video.srcObject) {
                 alert("先に「鏡をうつす」ボタンを押してね！");
                 return;
             }
-
             const ctx = canvas.getContext("2d");
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
-            
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
             const imageURL = canvas.toDataURL("image/jpeg");
             const link = document.createElement("a");
             link.href = imageURL;
@@ -781,25 +765,19 @@
             clearInterval(timerCountdown);
             timerAudio.pause();
             timerAudio.currentTime = 0;
-
             const inputVal = document.getElementById("timer-input").value;
-            
             if (timeLeft <= 0 || inputVal !== "") {
                 timeLeft = parseInt(inputVal, 10);
                 document.getElementById("timer-input").value = "";
             }
-
             if (isNaN(timeLeft) || timeLeft <= 0) {
                 alert("有効な秒数を入力してください！");
                 return;
             }
-
             updateTimerDisplay();
-
             timerCountdown = setInterval(function() {
                 timeLeft--;
                 updateTimerDisplay();
-
                 if (timeLeft <= 0) {
                     clearInterval(timerCountdown);
                     timerAudio.play(); 
@@ -819,11 +797,7 @@
         let formula = "";      
 
         function pressNum(val) {
-            if (currentInput === "0" && val !== ".") {
-                currentInput = val;
-            } else {
-                currentInput += val;
-            }
+            if (currentInput === "0" && val !== ".") { currentInput = val; } else { currentInput += val; }
             formula += val;
             screen.value = currentInput;
         }
@@ -834,23 +808,12 @@
             if (op === "-") displayOp = " － ";
             if (op === "*") displayOp = " × ";
             if (op === "/") displayOp = " ÷ ";
-
             if (formula === "") {
-                if (op === "-") {
-                    formula = "-";
-                    screen.value = " － ";
-                    return;
-                }
+                if (op === "-") { formula = "-"; screen.value = " － "; return; }
                 return;
             }
-
             const lastChar = formula.slice(-1);
-            if (["+", "-", "*", "/"].includes(lastChar)) {
-                formula = formula.slice(0, -1) + op;
-            } else {
-                formula += op;
-            }
-
+            if (["+", "-", "*", "/"].includes(lastChar)) { formula = formula.slice(0, -1) + op; } else { formula += op; }
             currentInput = "0";
             screen.value = displayOp;
         }
@@ -875,7 +838,5 @@
             }
         }
     </script>
-
 </body>
 </html>
-
