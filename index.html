@@ -294,7 +294,7 @@
 
         <!-- 👈 左がわ -->
         <div class="left-content">
-            <h1 id="aisatsu">こんにちは！</h1>
+            <h1 id="aisatsu">ゲスト、こんにちは！</h1>
             
             <div class="tokei-box">
                 <p id="hizuke">0000年00月00日( )</p>
@@ -309,6 +309,7 @@
                 <button class="mirror-btn" onclick="startMirror()">鏡をうつす</button>
                 <button class="shutter-btn" onclick="takePhoto()">📸 写真をダウンロード</button>
             </div>
+
             <!-- 🎨 設定メニュー（最初は非表示） -->
             <div id="setting-box" style="display: none; background: rgba(0, 0, 0, 0.5); padding: 15px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.3); max-width: 400px; margin-top: 15px;">
                 <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; text-align: center; color: #a855f7;">🛠️ 設定メニュー</p>
@@ -328,40 +329,40 @@
                 <!-- 🗺️ タイムゾーン変更 -->
                 <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🗺️ タイムゾーン（世界の時間）</p>
                 <select id="timezone-selector" style="background: #1f2937; color: white; font-size: 13px;">
-    <option value="Etc/GMT+12">UTC-12 (ベーカー島)</option>
-    <option value="Pacific/Page_Page">UTC-11 (サモア・ニューエ)</option>
-    <option value="Pacific/Honolulu">UTC-10 (ハワイ)</option>
-    <option value="America/Anchorage">UTC-9 (アラスカ)</option>
-    <option value="America/Los_Angeles">UTC-8 (太平洋時間 / ロサンゼルス)</option>
-    <option value="America/Denver">UTC-7 (山岳部時間 / デンバー)</option>
-    <option value="America/Chicago">UTC-6 (中部時間 / シカゴ)</option>
-    <option value="America/New_York">UTC-5 (東部時間 / ニューヨーク)</option>
-    <option value="America/Caracas">UTC-4 (カラカス・サンティアゴ)</option>
-    <option value="America/Sao_Paulo">UTC-3 (ブラジル / サンパウロ)</option>
-    <option value="America/Noronha">UTC-2 (フェルナンド・デ・ノローニャ)</option>
-    <option value="Atlantic/Cape_Verde">UTC-1 (カーボベルデ)</option>
-    <option value="Europe/London">UTC+0 (イギリス / ロンドン)</option>
-    <option value="Europe/Paris">UTC+1 (フランス / パリ)</option>
-    <option value="Africa/Cairo">UTC+2 (エジプト / カイロ)</option>
-    <option value="Europe/Moscow">UTC+3 (ロシア / モスクワ)</option>
-    <option value="Asia/Dubai">UTC+4 (アラブ首長国連邦 / ドバイ)</option>
-    <option value="Asia/Karachi">UTC+5 (パキスタン / カラチ)</option>
-    <option value="Asia/Dhaka">UTC+6 (バングラデシュ / ダッカ)</option>
-    <option value="Asia/Bangkok">UTC+7 (タイ / バンコク)</option>
-    <option value="Asia/Singapore">UTC+8 (シンガポール・中国・台湾)</option>
-    <option value="Asia/Tokyo" selected>UTC+9 (日本 / 東京・韓国)</option>
-    <option value="Australia/Sydney">UTC+10 (オーストラリア / シドニー)</option>
-    <option value="Pacific/Noumea">UTC+11 (ニューカレドニア)</option>
-    <option value="Pacific/Auckland">UTC+12 (ニュージーランド)</option>
-    <option value="Pacific/Fakaofo">UTC+13 (トケラウ諸島)</option>
-    <option value="Pacific/Kiritimati">UTC+14 (キリバス / ライン諸島)</option>
-</select>
-                    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+                    <option value="Etc/GMT+12">UTC-12 (ベーカー島)</option>
+                    <option value="Pacific/Pago_Pago">UTC-11 (サモア・ニューエ)</option>
+                    <option value="Pacific/Honolulu">UTC-10 (ハワイ)</option>
+                    <option value="America/Anchorage">UTC-9 (アラスカ)</option>
+                    <option value="America/Los_Angeles">UTC-8 (太平洋時間 / ロサンゼルス)</option>
+                    <option value="America/Denver">UTC-7 (山岳部時間 / デンバー)</option>
+                    <option value="America/Chicago">UTC-6 (中部時間 / シカゴ)</option>
+                    <option value="America/New_York">UTC-5 (東部時間 / ニューヨーク)</option>
+                    <option value="America/Caracas">UTC-4 (カラカス・サンティアゴ)</option>
+                    <option value="America/Sao_Paulo">UTC-3 (ブラジル / サンパウロ)</option>
+                    <option value="America/Noronha">UTC-2 (フェルナンド・デ・ノローニャ)</option>
+                    <option value="Atlantic/Cape_Verde">UTC-1 (カーボベルデ)</option>
+                    <option value="Europe/London">UTC+0 (イギリス / ロンドン)</option>
+                    <option value="Europe/Paris">UTC+1 (フランス / パリ)</option>
+                    <option value="Africa/Cairo">UTC+2 (エジプト / カイロ)</option>
+                    <option value="Europe/Moscow">UTC+3 (ロシア / モスクワ)</option>
+                    <option value="Asia/Dubai">UTC+4 (アラブ首長国連邦 / ドバイ)</option>
+                    <option value="Asia/Karachi">UTC+5 (パキスタン / カラチ)</option>
+                    <option value="Asia/Dhaka">UTC+6 (バングラデシュ / ダッカ)</option>
+                    <option value="Asia/Bangkok">UTC+7 (タイ / バンコク)</option>
+                    <option value="Asia/Singapore">UTC+8 (シンガポール・中国・台湾)</option>
+                    <option value="Asia/Tokyo" selected>UTC+9 (日本 / 東京・韓国)</option>
+                    <option value="Australia/Sydney">UTC+10 (オーストラリア / シドニー)</option>
+                    <option value="Pacific/Noumea">UTC+11 (ニューカレドニア)</option>
+                    <option value="Pacific/Auckland">UTC+12 (ニュージーランド)</option>
+                    <option value="Pacific/Fakaofo">UTC+13 (トケラウ諸島)</option>
+                    <option value="Pacific/Kiritimati">UTC+14 (キリバス / ライン諸島)</option>
+                </select>
 
-    <!-- 👤 名前変更機能 -->
-    <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">👤 お名前の設定</p>
-    <input type="text" id="username-input" placeholder="例: ゲスト" style="background: #1f2937; color: white; font-size: 13px;" oninput="updateUsername()">
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
 
+                <!-- 👤 名前変更機能 -->
+                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">👤 お名前の設定</p>
+                <input type="text" id="username-input" placeholder="例: ゲスト" style="background: #1f2937; color: white; font-size: 13px;" oninput="updateUsername()">
             </div>
 
             <!-- 🔮 今日の運勢おみくじ -->
@@ -469,7 +470,7 @@
 
     <!-- 🧠 スクリプト部分 -->
     <script>
-        // 1. 時計と挨拶の更新（タイムゾーン対応版！）
+        // 1. 時計と挨拶の更新（タイムゾーン ＆ お名前変更対応版！）
         function tokeiWoUgokasul() {
             const tzSelector = document.getElementById("timezone-selector");
             const tz = tzSelector ? tzSelector.value : "Asia/Tokyo"; 
@@ -488,7 +489,7 @@
                 if (p.type === 'second') s = p.value.padStart(2, '0');
             });
             
-                     // 👤 設定された名前を取得する（空っぽなら「ゲスト」にする）
+            // 👤 設定された名前を取得する（空っぽなら「ゲスト」にする）
             const nameInput = document.getElementById("username-input");
             const currentName = (nameInput && nameInput.value.trim() !== "") ? nameInput.value.trim() : "ゲスト";
 
@@ -501,17 +502,6 @@
             } else {
                 aisatsuTag.textContent = currentName + "、こんばんは！";
             }
-        }
-        setInterval(tokeiWoUgokasul, 1000);
-        tokeiWoUgokasul();
-
-        // 👤 名前が入力されたらブラウザに即時保存する関数
-        function updateUsername() {
-            const nameInput = document.getElementById("username-input");
-            localStorage.setItem("cogie_username", nameInput.value);
-            tokeiWoUgokasul(); // 入力した瞬間に上の挨拶へ反映させる
-        }
-
 
             const targetDate = new Date(new Date().toLocaleString("en-US", {timeZone: tz}));
             const yoobi = ["日", "月", "火", "水", "木", "金", "土"];
@@ -522,6 +512,13 @@
         }
         setInterval(tokeiWoUgokasul, 1000);
         tokeiWoUgokasul();
+
+        // 👤 名前が入力されたらブラウザに即時保存する関数
+        function updateUsername() {
+            const nameInput = document.getElementById("username-input");
+            localStorage.setItem("cogie_username", nameInput.value);
+            tokeiWoUgokasul(); // 入力した瞬間に上の挨拶へ反映させる
+        }
 
         // ⚙️ 設定ボタンのひらく・とじる（トグル機能）
         function toggleSettings() {
@@ -542,7 +539,6 @@
             const savedName = localStorage.getItem("cogie_username") || "ゲスト";
             document.getElementById("username-input").value = savedName;
         });
-
 
         // 3. コメントの自動保存機能（LocalStorage）
         function addComment() {
@@ -779,7 +775,7 @@
             const video = document.getElementById("mirror-video");
             const canvas = document.getElementById("download-canvas");
             if (!video.srcObject) {
-                alert("先に「鏡をうつす」ボタンを押してね！");
+                alert("先に「鏡をうつす」ボタンを押ね！");
                 return;
             }
             const ctx = canvas.getContext("2d");
