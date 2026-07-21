@@ -356,6 +356,12 @@
     <option value="Pacific/Fakaofo">UTC+13 (トケラウ諸島)</option>
     <option value="Pacific/Kiritimati">UTC+14 (キリバス / ライン諸島)</option>
 </select>
+                    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+
+    <!-- 👤 名前変更機能 -->
+    <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">👤 お名前の設定</p>
+    <input type="text" id="username-input" placeholder="例: ゲスト" style="background: #1f2937; color: white; font-size: 13px;" oninput="updateUsername()">
+
             </div>
 
             <!-- 🔮 今日の運勢おみくじ -->
@@ -482,15 +488,30 @@
                 if (p.type === 'second') s = p.value.padStart(2, '0');
             });
             
+                     // 👤 設定された名前を取得する（空っぽなら「ゲスト」にする）
+            const nameInput = document.getElementById("username-input");
+            const currentName = (nameInput && nameInput.value.trim() !== "") ? nameInput.value.trim() : "ゲスト";
+
             const hoursNum = parseInt(h, 10);
             const aisatsuTag = document.getElementById("aisatsu");
             if (hoursNum >= 5 && hoursNum < 11) {
-                aisatsuTag.textContent = "おはようございます！";
+                aisatsuTag.textContent = currentName + "、おはようございます！";
             } else if (hoursNum >= 11 && hoursNum < 18) {
-                aisatsuTag.textContent = "こんにちは！";
+                aisatsuTag.textContent = currentName + "、こんにちは！";
             } else {
-                aisatsuTag.textContent = "こんばんは！";
+                aisatsuTag.textContent = currentName + "、こんばんは！";
             }
+        }
+        setInterval(tokeiWoUgokasul, 1000);
+        tokeiWoUgokasul();
+
+        // 👤 名前が入力されたらブラウザに即時保存する関数
+        function updateUsername() {
+            const nameInput = document.getElementById("username-input");
+            localStorage.setItem("cogie_username", nameInput.value);
+            tokeiWoUgokasul(); // 入力した瞬間に上の挨拶へ反映させる
+        }
+
 
             const targetDate = new Date(new Date().toLocaleString("en-US", {timeZone: tz}));
             const yoobi = ["日", "月", "火", "水", "木", "金", "土"];
@@ -516,7 +537,12 @@
             loadComments();
             initAudioDB();  
             initBgDB();     
+            
+            // 👤 保存された名前を読み込む（なければ「ゲスト」にする）
+            const savedName = localStorage.getItem("cogie_username") || "ゲスト";
+            document.getElementById("username-input").value = savedName;
         });
+
 
         // 3. コメントの自動保存機能（LocalStorage）
         function addComment() {
