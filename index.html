@@ -522,10 +522,11 @@
             initAudioDB();   
             initBgDB();      
             
-       // 💡 Yahoo! JAPANアプリかどうかをチェックする処理
+  // 💡 Yahoo! JAPANアプリや特定のアプリかどうかをチェックする処理
             const userAgent = navigator.userAgent.toLowerCase();
-            if (userAgent.includes("yjapp") || userAgent.includes("yahooandroid")) {
-                alert("警告: Yahoo! JAPANアプリ内では鏡(カメラ)が正しく機能しない可能性があります。Chromeなどの標準ブラウザで開いてみてください。");
+            
+            if (userAgent.includes("yjapp") || userAgent.includes("yahooandroid") || userAgent.includes("it.nikodroid.offline")) {
+                alert("警告:お使いのブラウザでは鏡(カメラ)が正しく機能しない可能性があります。Chromeなどの標準ブラウザで開いてみてください。");
             }
 
             const savedName = localStorage.getItem("cogie_username") || "ゲスト";
