@@ -374,7 +374,9 @@
             <a class="link-btn" style="background-color: #ef4444;" href="https://weather.yahoo.co.jp" target="_blank">⛅ Y!天気を開く</a>
             <a class="link-btn" style="background-color: #ef4444;" href="https://yahoo.co.jp" target="_blank">🔴 Yahoo!を開く</a>
             
-            <p id="pesi-description" style="font-size: 12px; color: #e0e0e0; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 4px; margin: 8px 0;">説明を読み込んでいます...</p>
+            <p id="pesi-description" style="font-size: 12px; color: #e0e0e0; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 4px; margin: 8px 0 4px 0;">説明を読み込んでいます...</p>
+
+            <p id="news-description" style="font-size: 12px; color: #e0e0e0; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 4px; margin: 4px 0 8px 0;">ニュースを読み込んでいます...</p>
 
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
@@ -417,7 +419,7 @@
                 <div class="calc-buttons">
                     <button class="clear" onclick="clearCalc()">けす</button>
                     <button class="operator" onclick="pressOperator('/')">÷</button>
-                    <button class="operator" onclick="pressOperator('*')">×Pattern</button>
+                    <button class="operator" onclick="pressOperator('*')">×</button>
                     <button class="operator" onclick="pressOperator('-')">－</button>
                     
                     <button onclick="pressNum('7')">7</button>
@@ -529,6 +531,16 @@
                 })
                 .catch(error => {
                     document.getElementById('pesi-description').textContent = '説明文の読み込みに失敗しました。';
+                });
+
+            // news.txt を読み込んで pesi.txt の下に表示する
+            fetch('news.txt')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('news-description').textContent = data;
+                })
+                .catch(error => {
+                    document.getElementById('news-description').textContent = 'ニュースの読み込みに失敗しました。';
                 });
         });
 
