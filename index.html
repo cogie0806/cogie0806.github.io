@@ -351,11 +351,9 @@
                 <input type="text" id="username-input" placeholder="例: ゲスト" style="background: #1f2937; color: white; font-size: 13px;" oninput="updateUsername()">
             </div>
 
-            <div class="omikuji-box">
-                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🔮 今日の運勢おみくじ</p>
-                <button onclick="drawOmikuji()" style="background-color: #f59e0b;">おみくじをひく</button>
-                <div id="omikuji-result">？</div>
-                <p id="omikuji-comment">ボタンを押すと今日の運勢がわかるよ！</p>
+      <div class="omikuji-box">
+                <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">🔮 今日の運勢おみくじ</p>
+                <iframe src="https://scratch.mit.edu/projects/1276683891/embed" allowtransparency="true" width="100%" height="402" frameborder="0" scrolling="no" allowfullscreen style="border-radius: 8px;"></iframe>
             </div>
             
             <p id="shoukai-text" style="margin-top: 20px;">はじめてホームページを作りました！</p>
@@ -589,19 +587,7 @@
             }
         }
 
-        // 4. おみくじ機能
-        function drawOmikuji() {
-            const kuji = [
-                { result: "超大吉 🌟", comment: "今日は最高の1日！やりたいことが全部うまくいくよ！" },
-                { result: "大吉 🎯", comment: "ラッキーなことが起きそう！トラックボールの充電もバッチリ！" },
-                { result: "中吉 ✨", comment: "良い運勢！お気に入りの音樂を聴くとさらにハッピーに！" },
-                { result: "小吉 🍀", comment: "いつも通りの平和な日。扇風機を「中」にして涼もう！" },
-                { result: "吉 🌱", comment: "コツコツ頑張ると良いことがあるよ。電卓で計算の練習をしてみる？" }
-            ];
-            const r = Math.floor(Math.random() * kuji.length);
-            document.getElementById("omikuji-result").textContent = kuji[r].result;
-            document.getElementById("omikuji-comment").textContent = kuji[r].comment;
-        }
+       
 
         // 5. 背景切り替え機能
         let bgDb = null;
