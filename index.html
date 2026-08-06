@@ -516,14 +516,21 @@
             }
         }
 
-        // 2. 画面読み込み時の初期化処理
+   // 2. 画面読み込み時の初期化処理
         window.addEventListener('DOMContentLoaded', () => {
             loadComments();
-            initAudioDB();  
-            initBgDB();     
+            initAudioDB();   
+            initBgDB();      
             
+       // 💡 Yahoo! JAPANアプリかどうかをチェックする処理
+            const userAgent = navigator.userAgent.toLowerCase();
+            if (userAgent.includes("yjapp") || userAgent.includes("yahooandroid")) {
+                alert("警告: Yahoo! JAPANアプリ内では鏡(カメラ)が正しく機能しない可能性があります。Chromeなどの標準ブラウザで開いてみてください。");
+            }
+
             const savedName = localStorage.getItem("cogie_username") || "ゲスト";
             document.getElementById("username-input").value = savedName;
+
 
             // pesi.txt を読み込んでメニューに表示する
             fetch('pesi.txt')
