@@ -47,7 +47,7 @@
         .tokei-box {
             background: rgba(0, 0, 0, 0.3); 
             display: inline-block;   
-            padding: 10px 15px;           
+            padding: 10px 15px;            
             border-radius: 8px;      
             margin-bottom: 20px;
         }
@@ -351,9 +351,10 @@
                 <input type="text" id="username-input" placeholder="例: ゲスト" style="background: #1f2937; color: white; font-size: 13px;" oninput="updateUsername()">
             </div>
 
-      <div class="omikuji-box">
+            <div class="omikuji-box">
                 <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">🔮 今日の運勢おみくじ</p>
-                <iframe src="https://scratch.mit.edu/projects/1276683891/embed" allowtransparency="true" width="100%" height="402" frameborder="0" scrolling="no" allowfullscreen style="border-radius: 8px;"></iframe>
+                <iframe id="omikuji-frame" src="https://scratch.mit.edu/projects/1276683891/embed" allowtransparency="true" width="100%" height="402" frameborder="0" scrolling="no" allowfullscreen style="border-radius: 8px;"></iframe>
+                <button onclick="reloadOmikuji()" style="margin-top: 10px; background-color: #f59e0b;">🔄 おみくじをやり直す</button>
             </div>
             
             <p id="shoukai-text" style="margin-top: 20px;">はじめてホームページを作りました！</p>
@@ -374,9 +375,9 @@
             <a class="link-btn" style="background-color: #ef4444;" href="https://yahoo.co.jp" target="_blank">🔴 Yahoo!を開く</a>
             <a class="link-btn" style="background-color: #ffab19;" href="https://scratch.mit.edu/" target="_blank">🟠Scratchでプログラミングする</a>
             
-       <p>このページについて</p>
-               
-        <p id="pesi-description" style="font-size: 12px; color: #e0e0e0; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 4px; margin: 8px 0 4px 0;">説明を読み込んでいます...</p>
+            <p>このページについて</p>
+                
+            <p id="pesi-description" style="font-size: 12px; color: #e0e0e0; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 4px; margin: 8px 0 4px 0;">説明を読み込んでいます...</p>
 
 
             <div class="player-box">
@@ -456,6 +457,12 @@
     </div>
 
     <script>
+        // おみくじの再読み込み機能
+        function reloadOmikuji() {
+            const iframe = document.getElementById("omikuji-frame");
+            iframe.src = iframe.src;
+        }
+
         // 1. 時計と挨拶の更新
         function tokeiWoUgokasul() {
             const tzSelector = document.getElementById("timezone-selector");
@@ -513,13 +520,13 @@
             }
         }
 
-   // 2. 画面読み込み時の初期化処理
+        // 2. 画面読み込み時の初期化処理
         window.addEventListener('DOMContentLoaded', () => {
             loadComments();
             initAudioDB();   
             initBgDB();      
             
-  // 💡 Yahoo! JAPANアプリや特定のアプリかどうかをチェックする処理
+            // 💡 Yahoo! JAPANアプリや特定のアプリかどうかをチェックする処理
             const userAgent = navigator.userAgent.toLowerCase();
             
             if (userAgent.includes("yjapp") || userAgent.includes("yahooandroid") || userAgent.includes("it.nikodroid.offline")) {
@@ -591,8 +598,6 @@
                 listTag.appendChild(defaultBox);
             }
         }
-
-       
 
         // 5. 背景切り替え機能
         let bgDb = null;
