@@ -374,10 +374,27 @@
             <a class="link-btn" style="background-color: #ef4444;" href="https://weather.yahoo.co.jp" target="_blank">⛅ Y!天気を開く</a>
             <a class="link-btn" style="background-color: #ef4444;" href="https://yahoo.co.jp" target="_blank">🔴 Yahoo!を開く</a>
             <a class="link-btn" style="background-color: #ffab19;" href="https://scratch.mit.edu/users/cogie0806/" target="_blank">🟠Scratchでプログラミングする</a>
-            
-            <p>このページについて</p>
-                
-            <p id="pesi-description" style="font-size: 12px; color: #e0e0e0; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 4px; margin: 8px 0 4px 0;">説明を読み込んでいます...</p>
+    
+        
+<div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.3); padding: 12px; border-radius: 8px;">
+    <p><b>このページについて</b></p>
+
+    <p><b>1.僕について</b></p>
+    <p>はじめまして。</p>
+    <p>cogie0806です。</p>
+    <p>小4です。</p>
+    <p>よろしければ僕のフォローよろしくお願いいたします。</p>
+    <a href="https://scratch.mit.edu/users/cogie0806/" target="_blank">・Scratch</a><br>
+    <a href="https://minecraft-mcworld.com/author/a850cd4c8614f807c8bf03559472f5933a301cd2/" target="_blank">・クラフターズコロニー</a><br>
+    <a href="https://www.roblox.com/ja/users/10697827229/profile" target="_blank">・Roblox</a>
+
+    <p><b>2.このページの作者</b></p>
+    <p>リクエスト・アップロード・簡単なバグ修正: cogie0806</p>
+    <p>HTML作成: Google AI様</p>
+
+    <p>このページの説明は以上です。</p>
+    <p>cogie0806</p>
+</div>
 
 <iframe src="https://cogie0806.github.io/Search-cogie0806/#gsc.tab=0" style="width: 100%; height: 500px; border: none;"></iframe>
             
@@ -538,16 +555,6 @@
             const savedName = localStorage.getItem("cogie_username") || "ゲスト";
             document.getElementById("username-input").value = savedName;
 
-
-            // pesi.txt を読み込んでメニューに表示する
-            fetch('pesi.txt')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('pesi-description').textContent = data;
-                })
-                .catch(error => {
-                    document.getElementById('pesi-description').textContent = '説明文の読み込みに失敗しました。';
-                });
 
             // news.txt を読み込んで pesi.txt の下に表示する
             fetch('news.txt')
