@@ -107,18 +107,6 @@
             margin-top: 15px;
             text-align: center;
         }
-        #omikuji-result {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0 5px 0;
-            color: #f59e0b;
-        }
-        #omikuji-comment {
-            font-size: 13px;
-            color: #e0e0e0;
-            margin: 0;
-            min-height: 18px;
-        }
 
         /* 🎵 音楽プレイヤーのデザイン */
         .player-box {
@@ -261,6 +249,33 @@
             background-color: #3b82f6; 
         }
 
+        /* 🚀 初期設定モーダル画面 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 450px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid #a855f7;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
         .link-btn, button, select {
             transition: all 0.3s ease;
         }
@@ -281,6 +296,47 @@
 </head>
 <body>
 
+    <!-- 🚀 初回アクセス用の初期設定画面（モーダル） -->
+    <div id="first-setup-modal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="label-init-title" style="margin: 0 0 10px 0; font-size: 18px; font-weight: bold; text-align: center; color: #a855f7;">✨ はじめての初期設定</p>
+            <p style="font-size: 12px; color: #ccc; text-align: center; margin-bottom: 15px;">お好みの設定を選んでください。（後からいつでも変更できます）</p>
+
+            <p id="label-init-lang" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🌐 言語 (Language)</p>
+            <select id="init-lang-selector" style="background: #111827; color: white; font-size: 13px;" onchange="syncFromInit('lang')">
+                <option value="ja" selected>日本語 (Japanese)</option>
+                <option value="en">English (英語)</option>
+            </select>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+
+            <p id="label-init-bg" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🎨 背景デザイン変更</p>
+            <select id="init-bg-selector" class="bg-select" onchange="syncFromInit('bg')">
+                <option value="bg.jpg">windows11背景</option>
+                <option value="2054115ca660bda6ce7e56dd701de7ca_t.jpeg">にじ背景</option>
+                <option value="music1.gif">動く音符</option>
+            </select>
+            
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+
+            <p id="label-init-tz" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🗺️ タイムゾーン（世界の時間）</p>
+            <select id="init-timezone-selector" style="background: #111827; color: white; font-size: 13px;" onchange="syncFromInit('tz')">
+                <option value="device" selected>📱 デバイスのローカル時刻</option>
+                <option value="auto">📍 位置情報で自動 (UTC+-)</option>
+                <option value="Asia/Tokyo">UTC+9 (日本 / 東京・韓国)</option>
+                <option value="America/New_York">UTC-5 (東部時間 / ニューヨーク)</option>
+                <option value="Europe/London">UTC+0 (イギリス / ロンドン)</option>
+            </select>
+
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+
+            <p id="label-init-name" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">👤 お名前の設定</p>
+            <input type="text" id="init-username-input" placeholder="例: ゲスト" style="background: #111827; color: white; font-size: 13px;" oninput="syncFromInit('name')">
+
+            <button id="btn-finish-init" onclick="finishSetup()" style="margin-top: 20px; background-color: #10b981; padding: 10px; font-size: 16px;">初期設定を終わる</button>
+        </div>
+    </div>
+
     <div class="container">
 
         <div class="left-content">
@@ -292,30 +348,40 @@
             </div>
             
             <div class="mirror-box">
-                <p style="margin: 0 0 8px 0; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
+                <p id="label-mirror-title" style="margin: 0 0 8px 0; font-weight: bold;">🪞 かんたん鏡（カメラ）</p>
                 <video id="mirror-video" autoplay playsinline></video>
                 <canvas id="download-canvas"></canvas> 
-                <button class="mirror-btn" onclick="startMirror()">鏡をうつす</button>
-                <button class="shutter-btn" onclick="stopMirror()" style="background-color:#ef4444;">⛔ 鏡を止める</button>
-                <button class="shutter-btn" onclick="takePhoto()">📸 写真をダウンロード</button>
+                <button id="btn-mirror-start" class="mirror-btn" onclick="startMirror()">鏡をうつす</button>
+                <button id="btn-mirror-stop" class="shutter-btn" onclick="stopMirror()" style="background-color:#ef4444;">⛔ 鏡を止める</button>
+                <button id="btn-mirror-photo" class="shutter-btn" onclick="takePhoto()">📸 写真をダウンロード</button>
             </div>
 
             <div id="setting-box" style="display: none; background: rgba(0, 0, 0, 0.5); padding: 15px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.3); max-width: 400px; margin-top: 15px;">
-                <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; text-align: center; color: #a855f7;">🛠️ 設定メニュー</p>
+                <p id="label-setting-title" style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; text-align: center; color: #a855f7;">🛠️ 設定メニュー</p>
                 
-                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🎨 背景デザイン変更</p>
+                <p id="label-lang-select" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🌐 言語 (Language)</p>
+                <select id="lang-selector" style="background: #1f2937; color: white; font-size: 13px;" onchange="changeLanguage()">
+                    <option value="ja" selected>日本語 (Japanese)</option>
+                    <option value="en">English (英語)</option>
+                </select>
+
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+
+                <p id="label-bg-title" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🎨 背景デザイン変更</p>
                 <select id="bg-selector" class="bg-select" onchange="changeBackground()">
                     <option value="bg.jpg">windows11背景</option>
                     <option value="2054115ca660bda6ce7e56dd701de7ca_t.jpeg">にじ背景</option>
                     <option value="music1.gif">動く音符</option>
                 </select>
-                <p style="margin: 8px 0 3px 0; font-size: 11px;">📥 じぶんの背景を追加する (.gif/.png/.jpg)</p>
+                <p id="label-bg-upload" style="margin: 8px 0 3px 0; font-size: 11px;">📥 じぶんの背景を追加する (.gif/.png/.jpg)</p>
                 <input type="file" id="bg-uploader" accept="image/gif, image/png, image/jpeg, image/jpg" style="font-size: 12px;" onchange="uploadBackground(event)">
                 
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
 
-                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🗺️ タイムゾーン（世界の時間）</p>
-                <select id="timezone-selector" style="background: #1f2937; color: white; font-size: 13px;">
+                <p id="label-tz-title" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🗺️ タイムゾーン（世界の時間）</p>
+                <select id="timezone-selector" style="background: #1f2937; color: white; font-size: 13px;" onchange="tokeiWoUgokasul()">
+                    <option id="opt-tz-device" value="device" selected>📱 デバイスのローカル時刻</option>
+                    <option id="opt-tz-auto" value="auto">📍 位置情報で自動 (UTC+-)</option>
                     <option value="Etc/GMT+12">UTC-12 (ベーカー島)</option>
                     <option value="Pacific/Pago_Pago">UTC-11 (サモア・ニューエ)</option>
                     <option value="Pacific/Honolulu">UTC-10 (ハワイ)</option>
@@ -337,7 +403,7 @@
                     <option value="Asia/Dhaka">UTC+6 (バングラデシュ / ダッカ)</option>
                     <option value="Asia/Bangkok">UTC+7 (タイ / バンコク)</option>
                     <option value="Asia/Singapore">UTC+8 (シンガポール・中国・台湾)</option>
-                    <option value="Asia/Tokyo" selected>UTC+9 (日本 / 東京・韓国)</option>
+                    <option value="Asia/Tokyo">UTC+9 (日本 / 東京・韓国)</option>
                     <option value="Australia/Sydney">UTC+10 (オーストラリア / シドニー)</option>
                     <option value="Pacific/Noumea">UTC+11 (ニューカレドニア)</option>
                     <option value="Pacific/Auckland">UTC+12 (ニュージーランド)</option>
@@ -347,80 +413,76 @@
 
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
 
-                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">👤 お名前の設定</p>
+                <p id="label-name-title" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">👤 お名前の設定</p>
                 <input type="text" id="username-input" placeholder="例: ゲスト" style="background: #1f2937; color: white; font-size: 13px;" oninput="updateUsername()">
             </div>
 
             <div class="omikuji-box">
-                <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">🔮 今日の運勢おみくじ</p>
+                <p id="label-omikuji-title" style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">🔮 今日の運勢おみくじ</p>
                 <iframe id="omikuji-frame" src="https://scratch.mit.edu/projects/1276683891/embed" allowtransparency="true" width="100%" height="402" frameborder="0" scrolling="no" allowfullscreen style="border-radius: 8px;"></iframe>
-                <button onclick="reloadOmikuji()" style="margin-top: 10px; background-color: #f59e0b;">🔄 おみくじをやり直す</button>
+                <button id="btn-omikuji-reload" onclick="reloadOmikuji()" style="margin-top: 10px; background-color: #f59e0b;">🔄 おみくじをやり直す</button>
             </div>
             
             <p id="shoukai-text" style="margin-top: 20px;">はじめてホームページを作りました！</p>
         </div>
 
         <div class="right-menu">
-            <h3>メニュー</h3>
+            <h3 id="label-menu-title">メニュー</h3>
             
-            <button onclick="toggleSettings()" style="background-color: #a855f7; margin-bottom: 10px; font-size: 15px;">⚙️ 設定をひらく / とじる</button>
+            <button id="btn-toggle-settings" onclick="toggleSettings()" style="background-color: #a855f7; margin-bottom: 10px; font-size: 15px;">⚙️ 設定をひらく / とじる</button>
 
-<a class="link-btn ai-btn" href="https://cogie0806.github.io/Search-cogie0806/">🔍 cogie0806検索で調べる</a>
-            <a class="link-btn ai-btn" href="https://cogie0806.github.io/news/">📰cogie0806ニュースを開く</a>
-            <a class="link-btn ai-btn" href="https://cogie0806.github.io/https-cogie0806.github.io-oekaki/">🎨 画像編集ペイントエディタで絵を描く</a>
-            <a class="link-btn ai-btn" href="https://cogie0806.github.io/AI-cogie0806-/">🤖 AI/cogie0806をひらく</a>
-            <a class="link-btn" href="https://youtube.com">📺 YouTubeをひらく</a>
-            <a class="link-btn" href="https://google.com">🔍 Googleで調べる</a>
-            <a class="link-btn" href="https://chat.google.com">💬 google chatでチャットする</a>
-            <a class="link-btn" style="background-color: #ef4444;" href="https://weather.yahoo.co.jp">⛅ Y!天気を開く</a>
-            <a class="link-btn" style="background-color: #ef4444;" href="https://yahoo.co.jp">🔴 Yahoo!を開く</a>
-            <a class="link-btn" style="background-color: #ffab19;" href="https://scratch.mit.edu/users/cogie0806/">🟠Scratchでプログラミングする</a>    
+            <a id="link-search" class="link-btn ai-btn" href="https://cogie0806.github.io/Search-cogie0806/">🔍 cogie0806検索で調べる</a>
+            <a id="link-news" class="link-btn ai-btn" href="https://cogie0806.github.io/news/">📰 cogie0806ニュースを開く</a>
+            <a id="link-paint" class="link-btn ai-btn" href="https://cogie0806.github.io/https-cogie0806.github.io-oekaki/">🎨 画像編集ペイントエディタで絵を描く</a>
+            <a id="link-ai" class="link-btn ai-btn" href="https://cogie0806.github.io/AI-cogie0806-/">🤖 AI/cogie0806をひらく</a>
+            <a id="link-youtube" class="link-btn" href="https://youtube.com">📺 YouTubeをひらく</a>
+            <a id="link-google" class="link-btn" href="https://google.com">🔍 Googleで調べる</a>
+            <a id="link-chat" class="link-btn" href="https://chat.google.com">💬 google chatでチャットする</a>
+            <a id="link-weather" class="link-btn" style="background-color: #ef4444;" href="https://weather.yahoo.co.jp">⛅ Y!天気を開く</a>
+            <a id="link-yahoo" class="link-btn" style="background-color: #ef4444;" href="https://yahoo.co.jp">🔴 Yahoo!を開く</a>
+            <a id="link-scratch" class="link-btn" style="background-color: #ffab19;" href="https://scratch.mit.edu/users/cogie0806/">🟠 Scratchでプログラミングする</a>    
         
-<div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.3); padding: 12px; border-radius: 8px;">
-    <p><b>このページについて</b></p>
+            <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.3); padding: 12px; border-radius: 8px;">
+                <p><b id="about-title">このページについて</b></p>
 
-    <p><b>1.僕について</b></p>
-    <p>はじめまして。</p>
-    <p>cogie0806です。</p>
+                <p><b id="about-p1">1.僕について</b></p>
+                <p id="about-p2">はじめまして。</p>
+                <p>cogie0806です。</p>
 
-    <p>よろしければ僕のフォローよろしくお願いいたします。</p>
-    <a href="https://scratch.mit.edu/users/cogie0806/" target="_blank">・Scratch</a><br>
-    <a href="https://minecraft-mcworld.com/author/a850cd4c8614f807c8bf03559472f5933a301cd2/" target="_blank">・クラフターズコロニー</a><br>
-    <a href="https://www.roblox.com/ja/users/10697827229/profile" target="_blank">・Roblox</a>
+                <p id="about-p3">よろしければ僕のフォローよろしくお願いいたします。</p>
+                <a href="https://scratch.mit.edu/users/cogie0806/" target="_blank">・Scratch</a><br>
+                <a href="https://minecraft-mcworld.com/author/a850cd4c8614f807c8bf03559472f5933a301cd2/" target="_blank">・クラフターズコロニー</a><br>
+                <a href="https://www.roblox.com/ja/users/10697827229/profile" target="_blank">・Roblox</a>
 
-    <p><b>2.このページの作者</b></p>
-    <p>リクエスト・アップロード・簡単なバグ修正: cogie0806</p>
-    <p>HTML作成: Google AI様</p>
+                <p><b id="about-p4">2.このページの作者</b></p>
+                <p id="about-p5">リクエスト・アップロード・簡単なバグ修正: cogie0806</p>
+                <p id="about-p6">HTML作成: Google AI様</p>
 
-    <p>このページの説明は以上です。</p>
-    <p>cogie0806</p>
-</div>
-
-            
+                <p id="about-p7">このページの説明は以上です。</p>
+                <p>cogie0806</p>
+            </div>
 
             <div class="player-box">
-                <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; text-align: center;">🎵 音楽プレイヤー</p>
+                <p id="label-music-title" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; text-align: center;">🎵 音楽プレイヤー</p>
                 <select id="audio-selector" class="player-select" onchange="changeMusic()">
-                    <option value="">-- 曲をえらんでね --</option>
+                    <option id="opt-music-default" value="">-- 曲をえらんでね --</option>
                     <option value="erize.mp3">エリーゼのために</option>
                     <option value="Jingle_Bells-MB03-1(Reverb-Slow).mp3">ジングルベル(オルゴール)</option>
-            
                 </select>
                 <audio id="bgm-player" controls style="width: 100%; margin-top: 8px; height: 32px;"></audio>
                 
-                <p style="margin: 10px 0 3px 0; font-size: 12px; text-align: center;">📥 じぶんのmp3を追加して保存する</p>
+                <p id="label-music-upload" style="margin: 10px 0 3px 0; font-size: 12px; text-align: center;">📥 じぶんのmp3を追加して保存する</p>
                 <input type="file" id="audio-uploader" accept="audio/mp3" style="font-size: 12px;" onchange="uploadMusic(event)">
                 
                 <div class="audio-credit">
                     エリーゼのために提供：<a href="https://pocket-se.info" target="_blank" rel="noopener">ポケットサウンド</a>
-            
                 </div>
             </div>
 
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
             <div class="timer-box">
-                <p style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
+                <p id="label-timer-title" style="margin: 0; font-size: 14px;">⏱ タイマー（秒数を入力）</p>
                 <input type="number" id="timer-input" placeholder="例: 60" min="1">
                 <div id="timer-display">00:00</div>
                 <div class="timer-buttons">
@@ -432,10 +494,10 @@
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
             <div class="calc-box">
-                <p style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 電卓</p>
+                <p id="label-calc-title" style="margin: 0 0 8px 0; font-size: 14px; text-align: center; font-weight: bold;">🧮 電卓</p>
                 <input type="text" id="calc-screen" readonly value="0">
                 <div class="calc-buttons">
-                    <button class="clear" onclick="clearCalc()">けす</button>
+                    <button id="btn-calc-clear" class="clear" onclick="clearCalc()">けす</button>
                     <button class="operator" onclick="pressOperator('/')">÷</button>
                     <button class="operator" onclick="pressOperator('*')">×</button>
                     <button class="operator" onclick="pressOperator('-')">－</button>
@@ -461,20 +523,224 @@
 
             <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px 0;">
 
-            <p>💬 コメントをおねがいします！</p>
+            <p id="label-comment-title">💬 コメントをおねがいします！</p>
             
             <div id="comment-list">
                 <div class="comment-box">ホームページへようこそ！</div>
             </div>
 
             <input type="text" id="comment-input" placeholder="ここに文字を書いてね">
-            <button onclick="addComment()">送信する</button>
-            <button onclick="clearAllComments()" style="background-color: #ef4444; margin-top: 10px;">コメントをすべて消す</button>
+            <button id="btn-comment-send" onclick="addComment()">送信する</button>
+            <button id="btn-comment-clear" onclick="clearAllComments()" style="background-color: #ef4444; margin-top: 10px;">コメントをすべて消す</button>
         </div>
 
     </div>
 
     <script>
+        // 🌐 多言語データ定義
+        const translations = {
+            ja: {
+                mirrorTitle: "🪞 かんたん鏡（カメラ）",
+                mirrorStart: "鏡をうつす",
+                mirrorStop: "⛔ 鏡を止める",
+                mirrorPhoto: "📸 写真をダウンロード",
+                settingTitle: "🛠️ 設定メニュー",
+                langSelect: "🌐 言語 (Language)",
+                bgTitle: "🎨 背景デザイン変更",
+                bgUpload: "📥 じぶんの背景を追加する (.gif/.png/.jpg)",
+                tzTitle: "🗺️ タイムゾーン（世界の時間）",
+                tzDevice: "📱 デバイスのローカル時刻",
+                tzAuto: "📍 位置情報で自動 (UTC+-)",
+                nameTitle: "👤 お名前の設定",
+                namePlaceholder: "例: ゲスト",
+                defaultUser: "ゲスト",
+                greetingMorning: "、おはようございます！",
+                greetingAfternoon: "、こんにちは！",
+                greetingEvening: "、こんばんは！",
+                omikujiTitle: "🔮 今日の運勢おみくじ",
+                omikujiReload: "🔄 おみくじをやり直す",
+                introText: "はじめてホームページを作りました！",
+                menuTitle: "メニュー",
+                toggleSettings: "⚙️ 設定をひらく / とじる",
+                linkSearch: "🔍 cogie0806検索で調べる",
+                linkNews: "📰 cogie0806ニュースを開く",
+                linkPaint: "🎨 画像編集ペイントエディタで絵を描く",
+                linkAI: "🤖 AI/cogie0806をひらく",
+                linkYoutube: "📺 YouTubeをひらく",
+                linkGoogle: "🔍 Googleで調べる",
+                linkChat: "💬 google chatでチャットする",
+                linkWeather: "⛅ Y!天気を開く",
+                linkYahoo: "🔴 Yahoo!を開く",
+                linkScratch: "🟠 Scratchでプログラミングする",
+                aboutTitle: "このページについて",
+                aboutP1: "1.僕について",
+                aboutP2: "はじめまして。",
+                aboutP3: "よろしければ僕のフォローよろしくお願いいたします。",
+                aboutP4: "2.このページの作者",
+                aboutP5: "リクエスト・アップロード・簡単なバグ修正: cogie0806",
+                aboutP6: "HTML作成: Google AI様",
+                aboutP7: "このページの説明は以上です。",
+                musicTitle: "🎵 音楽プレイヤー",
+                musicDefault: "-- 曲をえらんでね --",
+                musicUpload: "📥 じぶんのmp3を追加して保存する",
+                timerTitle: "⏱ タイマー（秒数を入力）",
+                timerPlaceholder: "例: 60",
+                timerStart: "スタート",
+                timerStop: "ストップ",
+                calcTitle: "🧮 電卓",
+                calcClear: "けす",
+                commentTitle: "💬 コメントをおねがいします！",
+                commentPlaceholder: "ここに文字を書いてね",
+                commentSend: "送信する",
+                commentClear: "コメントをすべて消す",
+                defaultComment: "ホームページへようこそ！",
+                finishInit: "初期設定を終わる",
+                initTitle: "初期設定"
+            },
+            en: {
+                mirrorTitle: "🪞 Simple Mirror (Camera)",
+                mirrorStart: "Start Mirror",
+                mirrorStop: "⛔ Stop Mirror",
+                mirrorPhoto: "📸 Download Photo",
+                settingTitle: "🛠️ Settings Menu",
+                langSelect: "🌐 Language",
+                bgTitle: "🎨 Change Background",
+                bgUpload: "📥 Add your own background (.gif/.png/.jpg)",
+                tzTitle: "🗺️ Time Zone",
+                tzDevice: "📱 Device Local Time",
+                tzAuto: "📍 Auto Location",
+                nameTitle: "👤 Name Settings",
+                namePlaceholder: "e.g. Guest",
+                defaultUser: "Guest",
+                greetingMorning: ", Good morning!",
+                greetingAfternoon: ", Hello!",
+                greetingEvening: ", Good evening!",
+                omikujiTitle: "🔮 Today's Fortune",
+                omikujiReload: "🔄 Retry Fortune",
+                introText: "Welcome to my very first website!",
+                menuTitle: "Menu",
+                toggleSettings: "⚙️ Open / Close Settings",
+                linkSearch: "🔍 Search cogie0806*English not supported",
+                linkNews: "📰 Open cogie0806 News*English not supported",
+                linkPaint: "🎨 Draw with Paint Editor*English not supported",
+                linkAI: "🤖 Open AI/cogie0806*English not supported",
+                linkYoutube: "📺 Open YouTube",
+                linkGoogle: "🔍 Search on Google",
+                linkChat: "💬 Chat on Google Chat",
+                linkWeather: "⛅ Open Yahoo! Weather",
+                linkYahoo: "🔴 Open Yahoo!",
+                linkScratch: "🟠 Code on Scratch",
+                aboutTitle: "About This Page",
+                aboutP1: "1. About Me",
+                aboutP2: "Nice to meet you.",
+                aboutP3: "Please follow me if you like!",
+                aboutP4: "2. Page Author",
+                aboutP5: "Requests, Uploads, Bug fixes: cogie0806",
+                aboutP6: "HTML Creation: Google AI",
+                aboutP7: "That's all for the description.",
+                musicTitle: "🎵 Music Player",
+                musicDefault: "-- Select a song --",
+                musicUpload: "📥 Add and save your MP3",
+                timerTitle: "⏱ Timer (Enter seconds)",
+                timerPlaceholder: "e.g. 60",
+                timerStart: "Start",
+                timerStop: "Stop",
+                calcTitle: "🧮 Calculator",
+                calcClear: "Clear",
+                commentTitle: "💬 Leave a comment!",
+                commentPlaceholder: "Type your message here",
+                commentSend: "Send",
+                commentClear: "Clear All Comments",
+                defaultComment: "Welcome to the website!",
+                finishInit: "Finish Setup",
+                initTitle: "✨ Initial Setup"
+            }
+        };
+
+        // 言語の切り替え処理
+        function changeLanguage() {
+            const lang = document.getElementById("lang-selector").value;
+            localStorage.setItem("cogie_lang", lang);
+            const t = translations[lang] || translations.ja;
+
+            document.getElementById("label-mirror-title").textContent = t.mirrorTitle;
+            document.getElementById("btn-mirror-start").textContent = t.mirrorStart;
+            document.getElementById("btn-mirror-stop").textContent = t.mirrorStop;
+            document.getElementById("btn-mirror-photo").textContent = t.mirrorPhoto;
+            document.getElementById("label-setting-title").textContent = t.settingTitle;
+            document.getElementById("label-lang-select").textContent = t.langSelect;
+            document.getElementById("label-bg-title").textContent = t.bgTitle;
+            document.getElementById("label-bg-upload").textContent = t.bgUpload;
+            document.getElementById("label-tz-title").textContent = t.tzTitle;
+            document.getElementById("opt-tz-device").textContent = t.tzDevice;
+            document.getElementById("opt-tz-auto").textContent = t.tzAuto;
+            document.getElementById("label-name-title").textContent = t.nameTitle;
+            document.getElementById("username-input").placeholder = t.namePlaceholder;
+            document.getElementById("label-omikuji-title").textContent = t.omikujiTitle;
+            document.getElementById("btn-omikuji-reload").textContent = t.omikujiReload;
+            document.getElementById("shoukai-text").textContent = t.introText;
+            document.getElementById("label-menu-title").textContent = t.menuTitle;
+            document.getElementById("btn-toggle-settings").textContent = t.toggleSettings;
+            document.getElementById("link-search").textContent = t.linkSearch;
+            document.getElementById("link-news").textContent = t.linkNews;
+            document.getElementById("link-paint").textContent = t.linkPaint;
+            document.getElementById("link-ai").textContent = t.linkAI;
+            document.getElementById("link-youtube").textContent = t.linkYoutube;
+            document.getElementById("link-google").textContent = t.linkGoogle;
+            document.getElementById("link-chat").textContent = t.linkChat;
+            document.getElementById("link-weather").textContent = t.linkWeather;
+            document.getElementById("link-yahoo").textContent = t.linkYahoo;
+            document.getElementById("link-scratch").textContent = t.linkScratch;
+            document.getElementById("about-title").textContent = t.aboutTitle;
+            document.getElementById("about-p1").textContent = t.aboutP1;
+            document.getElementById("about-p2").textContent = t.aboutP2;
+            document.getElementById("about-p3").textContent = t.aboutP3;
+            document.getElementById("about-p4").textContent = t.aboutP4;
+            document.getElementById("about-p5").textContent = t.aboutP5;
+            document.getElementById("about-p6").textContent = t.aboutP6;
+            document.getElementById("about-p7").textContent = t.aboutP7;
+            document.getElementById("label-music-title").textContent = t.musicTitle;
+            document.getElementById("opt-music-default").textContent = t.musicDefault;
+            document.getElementById("label-music-upload").textContent = t.musicUpload;
+            document.getElementById("label-timer-title").textContent = t.timerTitle;
+            document.getElementById("timer-input").placeholder = t.timerPlaceholder;
+            document.getElementById("start-btn").textContent = t.timerStart;
+            document.getElementById("stop-btn").textContent = t.timerStop;
+            document.getElementById("label-calc-title").textContent = t.calcTitle;
+            document.getElementById("btn-calc-clear").textContent = t.calcClear;
+            document.getElementById("label-comment-title").textContent = t.commentTitle;
+            document.getElementById("comment-input").placeholder = t.commentPlaceholder;
+            document.getElementById("btn-comment-send").textContent = t.commentSend;
+            document.getElementById("btn-comment-clear").textContent = t.commentClear;
+
+            document.getElementById("label-init-title").textContent = t.initTitle;
+            document.getElementById("btn-finish-init").textContent = t.finishInit;
+
+            tokeiWoUgokasul();
+        }
+
+        // 初期設定モーダルと通常設定の連動
+        function syncFromInit(type) {
+            if (type === 'lang') {
+                document.getElementById('lang-selector').value = document.getElementById('init-lang-selector').value;
+                changeLanguage();
+            } else if (type === 'bg') {
+                document.getElementById('bg-selector').value = document.getElementById('init-bg-selector').value;
+                changeBackground();
+            } else if (type === 'tz') {
+                document.getElementById('timezone-selector').value = document.getElementById('init-timezone-selector').value;
+                tokeiWoUgokasul();
+            } else if (type === 'name') {
+                document.getElementById('username-input').value = document.getElementById('init-username-input').value;
+                updateUsername();
+            }
+        }
+
+        function finishSetup() {
+            localStorage.setItem("cogie_first_time", "done");
+            document.getElementById("first-setup-modal").style.display = "none";
+        }
+
         // おみくじの再読み込み機能
         function reloadOmikuji() {
             const iframe = document.getElementById("omikuji-frame");
@@ -484,44 +750,66 @@
         // 1. 時計と挨拶の更新
         function tokeiWoUgokasul() {
             const tzSelector = document.getElementById("timezone-selector");
-            const tz = tzSelector ? tzSelector.value : "Asia/Tokyo"; 
+            let tz = tzSelector ? tzSelector.value : "device"; 
 
-            const options = { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false };
-            const formatter = new Intl.DateTimeFormat('ja-JP', options);
-            const parts = formatter.formatToParts(new Date());
+            const currentLang = document.getElementById("lang-selector") ? document.getElementById("lang-selector").value : "ja";
+            const t = translations[currentLang] || translations.ja;
 
-            let year, month, date, h, m, s;
-            parts.forEach(p => {
-                if (p.type === 'year') year = p.value;
-                if (p.type === 'month') month = p.value.padStart(2, '0');
-                if (p.type === 'day') date = p.value.padStart(2, '0');
-                if (p.type === 'hour') h = p.value.padStart(2, '0');
-                if (p.type === 'minute') m = p.value.padStart(2, '0');
-                if (p.type === 'second') s = p.value.padStart(2, '0');
-            });
-            
+            let year, month, date, h, m, s, dayNum;
+
+            if (tz === "device") {
+                const now = new Date();
+                year = now.getFullYear();
+                month = String(now.getMonth() + 1).padStart(2, '0');
+                date = String(now.getDate()).padStart(2, '0');
+                h = String(now.getHours()).padStart(2, '0');
+                m = String(now.getMinutes()).padStart(2, '0');
+                s = String(now.getSeconds()).padStart(2, '0');
+                dayNum = now.getDay();
+            } else {
+                if (tz === "auto") {
+                    tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                }
+                const options = { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false };
+                const formatter = new Intl.DateTimeFormat('ja-JP', options);
+                const parts = formatter.formatToParts(new Date());
+
+                parts.forEach(p => {
+                    if (p.type === 'year') year = p.value;
+                    if (p.type === 'month') month = p.value.padStart(2, '0');
+                    if (p.type === 'day') date = p.value.padStart(2, '0');
+                    if (p.type === 'hour') h = p.value.padStart(2, '0');
+                    if (p.type === 'minute') m = p.value.padStart(2, '0');
+                    if (p.type === 'second') s = p.value.padStart(2, '0');
+                });
+                const targetDate = new Date(new Date().toLocaleString("en-US", {timeZone: tz}));
+                dayNum = targetDate.getDay();
+            }
+
             const nameInput = document.getElementById("username-input");
-            const currentName = (nameInput && nameInput.value.trim() !== "") ? nameInput.value.trim() : "ゲスト";
+            const currentName = (nameInput && nameInput.value.trim() !== "") ? nameInput.value.trim() : t.defaultUser;
 
             const hoursNum = parseInt(h, 10);
             const aisatsuTag = document.getElementById("aisatsu");
             if (hoursNum >= 5 && hoursNum < 11) {
-                aisatsuTag.textContent = currentName + "、おはようございます！";
+                aisatsuTag.textContent = currentName + t.greetingMorning;
             } else if (hoursNum >= 11 && hoursNum < 18) {
-                aisatsuTag.textContent = currentName + "、こんにちは！";
+                aisatsuTag.textContent = currentName + t.greetingAfternoon;
             } else {
-                aisatsuTag.textContent = currentName + "、こんばんは！";
+                aisatsuTag.textContent = currentName + t.greetingEvening;
             }
 
-            const targetDate = new Date(new Date().toLocaleString("en-US", {timeZone: tz}));
-            const yoobi = ["日", "月", "火", "水", "木", "金", "土"];
-            let dayNum = targetDate.getDay();
+            const yoobiJa = ["日", "月", "火", "水", "木", "金", "土"];
+            const yoobiEn = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
             
-            document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobi[dayNum] + "）";
+            if (currentLang === "en") {
+                document.getElementById("hizuke").textContent = year + "/" + month + "/" + date + " (" + yoobiEn[dayNum] + ")";
+            } else {
+                document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobiJa[dayNum] + "）";
+            }
             document.getElementById("tokei").textContent = h + ":" + m + ":" + s;
         }
         setInterval(tokeiWoUgokasul, 1000);
-        tokeiWoUgokasul();
 
         function updateUsername() {
             const nameInput = document.getElementById("username-input");
@@ -540,29 +828,39 @@
 
         // 2. 画面読み込み時の初期化処理
         window.addEventListener('DOMContentLoaded', () => {
+            // 初回アクセスチェック
+            const isFirstTime = localStorage.getItem("cogie_first_time");
+            if (!isFirstTime) {
+                document.getElementById("first-setup-modal").style.display = "flex";
+            }
+
+            const savedLang = localStorage.getItem("cogie_lang") || "ja";
+            document.getElementById("lang-selector").value = savedLang;
+            document.getElementById("init-lang-selector").value = savedLang;
+            changeLanguage();
+
             loadComments();
             initAudioDB();   
             initBgDB();      
             
-            // 💡 Yahoo! JAPANアプリや特定のアプリかどうかをチェックする処理
             const userAgent = navigator.userAgent.toLowerCase();
-            
             if (userAgent.includes("yjapp") || userAgent.includes("yahooandroid") || userAgent.includes("it.nikodroid.offline")) {
                 alert("警告:お使いのブラウザでは鏡(カメラ)が正しく機能しない可能性があります。Chromeなどの標準ブラウザで開いてみてください。");
             }
 
-            const savedName = localStorage.getItem("cogie_username") || "ゲスト";
+            const savedName = localStorage.getItem("cogie_username") || "";
             document.getElementById("username-input").value = savedName;
+            document.getElementById("init-username-input").value = savedName;
 
-
-            // news.txt を読み込んで pesi.txt の下に表示する
             fetch('news.txt')
                 .then(response => response.text())
                 .then(data => {
-                    document.getElementById('news-description').textContent = data;
+                    const el = document.getElementById('news-description');
+                    if (el) el.textContent = data;
                 })
                 .catch(error => {
-                    document.getElementById('news-description').textContent = 'ニュースの読み込みに失敗しました。';
+                    const el = document.getElementById('news-description');
+                    if (el) el.textContent = 'ニュースの読み込みに失敗しました。';
                 });
         });
 
@@ -600,9 +898,11 @@
                 localStorage.removeItem("cogie_comments");
                 const listTag = document.getElementById("comment-list");
                 listTag.innerHTML = "";
+                const currentLang = document.getElementById("lang-selector").value;
+                const t = translations[currentLang] || translations.ja;
                 const defaultBox = document.createElement("div");
                 defaultBox.className = "comment-box";
-                defaultBox.textContent = "ホームページへようこそ！";
+                defaultBox.textContent = t.defaultComment;
                 listTag.appendChild(defaultBox);
             }
         }
@@ -621,6 +921,7 @@
                 const lastBg = localStorage.getItem("cogie_last_bg");
                 if (lastBg) {
                     document.getElementById("bg-selector").value = lastBg;
+                    document.getElementById("init-bg-selector").value = lastBg;
                     changeBackground();
                 }
             };
