@@ -302,15 +302,7 @@
             <p id="label-init-title" style="margin: 0 0 10px 0; font-size: 18px; font-weight: bold; text-align: center; color: #a855f7;">✨ はじめての初期設定</p>
             <p style="font-size: 12px; color: #ccc; text-align: center; margin-bottom: 15px;">お好みの設定を選んでください。（後からいつでも変更できます）</p>
 
-            <p id="label-init-lang" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🌐 言語 (Language)</p>
-            <select id="init-lang-selector" style="background: #111827; color: white; font-size: 13px;" onchange="syncFromInit('lang')">
-                <option value="ja" selected>日本語 (Japanese)</option>
-                <option value="en">English (英語)</option>
-            </select>
-
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
-
-            <p id="label-init-bg" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🎨 背景デザイン変更</p>
+               <p id="label-init-bg" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🎨 背景デザイン変更</p>
             <select id="init-bg-selector" class="bg-select" onchange="syncFromInit('bg')">
                 <option value="bg.jpg">windows11背景</option>
                 <option value="2054115ca660bda6ce7e56dd701de7ca_t.jpeg">にじ背景</option>
@@ -359,13 +351,8 @@
             <div id="setting-box" style="display: none; background: rgba(0, 0, 0, 0.5); padding: 15px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.3); max-width: 400px; margin-top: 15px;">
                 <p id="label-setting-title" style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; text-align: center; color: #a855f7;">🛠️ 設定メニュー</p>
                 
-                <p id="label-lang-select" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🌐 言語 (Language)</p>
-                <select id="lang-selector" style="background: #1f2937; color: white; font-size: 13px;" onchange="changeLanguage()">
-                    <option value="ja" selected>日本語 (Japanese)</option>
-                    <option value="en">English (英語)</option>
-                </select>
-
-                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
+  
+  
 
                 <p id="label-bg-title" style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">🎨 背景デザイン変更</p>
                 <select id="bg-selector" class="bg-select" onchange="changeBackground()">
@@ -441,6 +428,8 @@
             <a id="link-weather" class="link-btn" style="background-color: #ef4444;" href="https://weather.yahoo.co.jp">⛅ Y!天気を開く</a>
             <a id="link-yahoo" class="link-btn" style="background-color: #ef4444;" href="https://yahoo.co.jp">🔴 Yahoo!を開く</a>
             <a id="link-scratch" class="link-btn" style="background-color: #ffab19;" href="https://scratch.mit.edu/users/cogie0806/">🟠 Scratchでプログラミングする</a>    
+
+              <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 12px 0;">
         
             <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.3); padding: 12px; border-radius: 8px;">
                 <p><b id="about-title">このページについて</b></p>
@@ -719,12 +708,9 @@
             tokeiWoUgokasul();
         }
 
-        // 初期設定モーダルと通常設定の連動
+ // 初期設定モーダルと通常設定の連動
         function syncFromInit(type) {
-            if (type === 'lang') {
-                document.getElementById('lang-selector').value = document.getElementById('init-lang-selector').value;
-                changeLanguage();
-            } else if (type === 'bg') {
+            if (type === 'bg') {
                 document.getElementById('bg-selector').value = document.getElementById('init-bg-selector').value;
                 changeBackground();
             } else if (type === 'tz') {
@@ -741,19 +727,10 @@
             document.getElementById("first-setup-modal").style.display = "none";
         }
 
-        // おみくじの再読み込み機能
-        function reloadOmikuji() {
-            const iframe = document.getElementById("omikuji-frame");
-            iframe.src = iframe.src;
-        }
-
         // 1. 時計と挨拶の更新
         function tokeiWoUgokasul() {
             const tzSelector = document.getElementById("timezone-selector");
             let tz = tzSelector ? tzSelector.value : "device"; 
-
-            const currentLang = document.getElementById("lang-selector") ? document.getElementById("lang-selector").value : "ja";
-            const t = translations[currentLang] || translations.ja;
 
             let year, month, date, h, m, s, dayNum;
 
@@ -787,26 +764,21 @@
             }
 
             const nameInput = document.getElementById("username-input");
-            const currentName = (nameInput && nameInput.value.trim() !== "") ? nameInput.value.trim() : t.defaultUser;
+            const currentName = (nameInput && nameInput.value.trim() !== "") ? nameInput.value.trim() : "ゲスト";
 
             const hoursNum = parseInt(h, 10);
             const aisatsuTag = document.getElementById("aisatsu");
             if (hoursNum >= 5 && hoursNum < 11) {
-                aisatsuTag.textContent = currentName + t.greetingMorning;
+                aisatsuTag.textContent = currentName + "さん、おはようございます！";
             } else if (hoursNum >= 11 && hoursNum < 18) {
-                aisatsuTag.textContent = currentName + t.greetingAfternoon;
+                aisatsuTag.textContent = currentName + "さん、こんにちは！";
             } else {
-                aisatsuTag.textContent = currentName + t.greetingEvening;
+                aisatsuTag.textContent = currentName + "さん、こんばんは！";
             }
 
             const yoobiJa = ["日", "月", "火", "水", "木", "金", "土"];
-            const yoobiEn = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
             
-            if (currentLang === "en") {
-                document.getElementById("hizuke").textContent = year + "/" + month + "/" + date + " (" + yoobiEn[dayNum] + ")";
-            } else {
-                document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobiJa[dayNum] + "）";
-            }
+            document.getElementById("hizuke").textContent = year + "年" + month + "月" + date + "日（" + yoobiJa[dayNum] + "）";
             document.getElementById("tokei").textContent = h + ":" + m + ":" + s;
         }
         setInterval(tokeiWoUgokasul, 1000);
@@ -834,11 +806,6 @@
                 document.getElementById("first-setup-modal").style.display = "flex";
             }
 
-            const savedLang = localStorage.getItem("cogie_lang") || "ja";
-            document.getElementById("lang-selector").value = savedLang;
-            document.getElementById("init-lang-selector").value = savedLang;
-            changeLanguage();
-
             loadComments();
             initAudioDB();   
             initBgDB();      
@@ -851,17 +818,6 @@
             const savedName = localStorage.getItem("cogie_username") || "";
             document.getElementById("username-input").value = savedName;
             document.getElementById("init-username-input").value = savedName;
-
-            fetch('news.txt')
-                .then(response => response.text())
-                .then(data => {
-                    const el = document.getElementById('news-description');
-                    if (el) el.textContent = data;
-                })
-                .catch(error => {
-                    const el = document.getElementById('news-description');
-                    if (el) el.textContent = 'ニュースの読み込みに失敗しました。';
-                });
         });
 
         // 3. コメント機能
@@ -898,16 +854,14 @@
                 localStorage.removeItem("cogie_comments");
                 const listTag = document.getElementById("comment-list");
                 listTag.innerHTML = "";
-                const currentLang = document.getElementById("lang-selector").value;
-                const t = translations[currentLang] || translations.ja;
                 const defaultBox = document.createElement("div");
                 defaultBox.className = "comment-box";
-                defaultBox.textContent = t.defaultComment;
+                defaultBox.textContent = "コメントはまだありません。";
                 listTag.appendChild(defaultBox);
             }
         }
 
-        // 5. 背景切り替え機能
+        // 4. 背景切り替え機能
         let bgDb = null;
         function initBgDB() {
             const request = indexedDB.open("CogieBgDB", 1);
@@ -995,7 +949,7 @@
             };
         }
 
-        // 6. 音楽プレイヤー機能
+        // 5. 音楽プレイヤー機能
         let db = null;
         const player = document.getElementById("bgm-player");
         const selector = document.getElementById("audio-selector");
@@ -1074,7 +1028,7 @@
             };
         }
 
-        // 7. 鏡と写真ダウンロードの処理
+        // 6. 鏡と写真ダウンロードの処理
         async function startMirror() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -1103,7 +1057,7 @@
             const video = document.getElementById("mirror-video");
             const canvas = document.getElementById("download-canvas");
             if (!video.srcObject) {
-                alert("先に「鏡をうつす」ボタンを押ね！");
+                alert("先に「鏡をうつす」ボタンを押してね！");
                 return;
             }
             const ctx = canvas.getContext("2d");
@@ -1119,7 +1073,7 @@
             link.click();
         }
 
-        // 8. タイマー用の処理
+        // 7. タイマー用の処理
         let timerCountdown;
         let timeLeft = 0;
         let timerAudio = new Audio("se (1).mp3");
@@ -1163,10 +1117,10 @@
             timerAudio.currentTime = 0;
         }
 
-        // 9. 電卓用の処理
+        // 8. 電卓用の処理
         const screen = document.getElementById("calc-screen");
         let currentInput = "0"; 
-        let formula = "";      
+        let formula = "";       
 
         function pressNum(val) {
             if (currentInput === "0" && val !== ".") { currentInput = val; } else { currentInput += val; }
