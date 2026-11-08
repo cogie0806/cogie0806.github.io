@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found - cogie0806のホームページ</title>
+   <link rel="icon" href="cogie0806.png" type="image/png">
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #333;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --accent-color: #007bff;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+
+        /* 背景バリエーション */
+        body.niji-bg {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+        }
+        body.win11-bg {
+            background: linear-gradient(135deg, #005a9e 0%, #0078d4 50%, #c7e0f4 100%);
+        }
+        body.mc-bg {
+            background-color: #4a5e3a;
+            background-image: repeating-linear-gradient(45deg, #3c4d2f 0px, #3c4d2f 2px, transparent 2px, transparent 10px);
+        }
+
+        .container {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(4px);
+        }
+
+        h1 {
+            font-size: 6rem;
+            margin: 0;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background-color: #0056b3;
+        }
+
+        .settings-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .settings-title {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .bg-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .bg-btn {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .bg-btn:hover {
+            background: #e9ecef;
+            border-color: #adadad;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>404</h1>
+        <h2>ページが見つかりません</h2>
+        <p>
+            お探しのページは移動したか、削除された可能性があります。<br>
+            URLが正しいかもう一度ご確認ください。
+        </p>
+        
+        <!-- ホームへのリンク（cogie0806.github.io のトップへ戻る） -->
+        <a href="https://cogie0806.github.io/home/" class="btn">🏠 ホームへ戻る</a>
+
+
+</body>
+</html>
